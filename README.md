@@ -49,7 +49,7 @@ By default, Obsidian "scrambles" `.canvas` file entries on every save. This plug
 
 - **Auto-compile**: Enable to automatically reorder on every save (in-place, no extra files)
 
-## CLI Tool
+## Standalone CLI Tool
 
 ```bash
 node cli/canvas-compile.mjs --in <path-to-.canvas> [--out <path-to-.json>]
