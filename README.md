@@ -97,11 +97,6 @@ Issues and PRs welcome! Please follow existing code style and include tests for 
 
 MIT
 
-## Author
-
-Zach Battin ([@SyntaxAsSpiral](https://github.com/SyntaxAsSpiral))
-Contact: syntaxasspiral@gmail.com
-
 ---
 
 **Bridges visual authoring with readable semantic structures for humans and machines alike.**
