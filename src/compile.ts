@@ -39,6 +39,41 @@ function normalizedId(value: unknown): string {
   return '';
 }
 
+function normalizeUrl(url: string): string {
+  // Remove protocol (http://, https://, etc.)
+  let normalized = url.replace(/^[a-z]+:\/\//i, '');
+  // Remove www. prefix
+  normalized = normalized.replace(/^www\./i, '');
+  return normalized.toLowerCase().trim();
+}
+
+function getNodeSortKey(node: CanvasNode): string {
+  const type = node?.type;
+
+  // Text nodes: sort by text content
+  if (type === 'text' && typeof node.text === 'string') {
+    return node.text.toLowerCase().trim();
+  }
+
+  // File nodes: sort by file path
+  if (type === 'file' && typeof node.file === 'string') {
+    return node.file.toLowerCase().trim();
+  }
+
+  // Link nodes: sort by normalized URL (without protocol/www)
+  if (type === 'link' && typeof node.url === 'string') {
+    return normalizeUrl(node.url);
+  }
+
+  // Group nodes: sort by label
+  if (type === 'group' && typeof node.label === 'string') {
+    return node.label.toLowerCase().trim();
+  }
+
+  // Fallback to node id
+  return normalizedId(node?.id).toLowerCase();
+}
+
 function stableSortByXY(nodes: CanvasNode[]): CanvasNode[] {
   nodes.sort((a, b) => {
     const ay = isFiniteNumber(a?.y) ? a.y : 0;
@@ -49,7 +84,7 @@ function stableSortByXY(nodes: CanvasNode[]): CanvasNode[] {
     const bx = isFiniteNumber(b?.x) ? b.x : 0;
     if (ax !== bx) return ax - bx;
 
-    return normalizedId(a?.id).localeCompare(normalizedId(b?.id));
+    return getNodeSortKey(a).localeCompare(getNodeSortKey(b));
   });
   return nodes;
 }

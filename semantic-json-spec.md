@@ -115,13 +115,20 @@ Semantic JSON extends the base JSON Canvas spec with **compiled ordering** for s
 Nodes are reordered **hierarchically** based on spatial containment:
 
 1. **Root orphan nodes** (not contained by any group)
-   - Sorted by `y` (ascending), then `x` (ascending), then `id` (lexicographic)
+   - Sorted by `y` (ascending), then `x` (ascending), then **content** (lexicographic)
 
 2. **Root groups** (not nested within other groups)
-   - Sorted by `y` (ascending), then `x` (ascending), then `id` (lexicographic)
+   - Sorted by `y` (ascending), then `x` (ascending), then **content** (lexicographic)
    - Immediately followed by their **contained nodes**:
-     - Non-group children first (sorted by y, x, id)
-     - Nested group children (sorted by y, x, id), each followed recursively by their contents
+     - Non-group children first (sorted by y, x, content)
+     - Nested group children (sorted by y, x, content), each followed recursively by their contents
+
+**Content-based sorting**: Nodes at the same spatial position are sorted by their semantic content:
+- **Text nodes**: sorted by text content
+- **File nodes**: sorted by file path
+- **Link nodes**: sorted by normalized URL (protocol and `www.` removed)
+- **Group nodes**: sorted by label
+- Falls back to node ID if no content available
 
 **Containment detection**: A node is contained by a group if its bounding box (x, y, width, height) falls entirely within the group's bounding box. For overlapping groups, the smallest containing group is chosen.
 
