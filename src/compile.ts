@@ -66,6 +66,14 @@ function getNodeSortKey(node: CanvasNode): string {
   return normalizedId(node?.id).toLowerCase();
 }
 
+function getNodeTypePriority(node: CanvasNode): number {
+  const type = node?.type;
+  // Link nodes go to bottom (highest priority number)
+  if (type === 'link') return 1;
+  // All other types (text, file, group) sort first
+  return 0;
+}
+
 function stableSortByXY(nodes: CanvasNode[]): CanvasNode[] {
   nodes.sort((a, b) => {
     const ay = isFiniteNumber(a?.y) ? a.y : 0;
@@ -76,6 +84,12 @@ function stableSortByXY(nodes: CanvasNode[]): CanvasNode[] {
     const bx = isFiniteNumber(b?.x) ? b.x : 0;
     if (ax !== bx) return ax - bx;
 
+    // Sort by type priority (content nodes before link nodes)
+    const aPriority = getNodeTypePriority(a);
+    const bPriority = getNodeTypePriority(b);
+    if (aPriority !== bPriority) return aPriority - bPriority;
+
+    // Then by content
     return getNodeSortKey(a).localeCompare(getNodeSortKey(b));
   });
   return nodes;

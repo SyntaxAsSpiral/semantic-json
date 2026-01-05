@@ -123,12 +123,18 @@ Nodes are reordered **hierarchically** based on spatial containment:
      - Non-group children first (sorted by y, x, content)
      - Nested group children (sorted by y, x, content), each followed recursively by their contents
 
-**Content-based sorting**: Nodes at the same spatial position are sorted by their semantic content:
-- **Text nodes**: sorted by text content
-- **File nodes**: sorted by file path
-- **Link nodes**: sorted by raw URL (preserves protocol, naturally clusters by http/https)
-- **Group nodes**: sorted by label
-- Falls back to node ID if no content available
+**Sorting within spatial positions**:
+
+Nodes at the same x,y position are sorted by:
+1. **Node type priority**: Link nodes always sort to bottom (like footnotes), content nodes (text/file/group) sort first
+2. **Content**: Within each type, sorted alphabetically by semantic content:
+   - **Text nodes**: sorted by text content
+   - **File nodes**: sorted by file path
+   - **Link nodes**: sorted by raw URL (preserves protocol)
+   - **Group nodes**: sorted by label
+   - Falls back to node ID if no content available
+
+**Rationale**: Link nodes function as references/citations, so they appear after primary content like footnotes in a document.
 
 **Containment detection**: A node is contained by a group if its bounding box (x, y, width, height) falls entirely within the group's bounding box. For overlapping groups, the smallest containing group is chosen.
 
