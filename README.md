@@ -11,9 +11,7 @@ By default, Obsidian scrambles `.canvas` file entries on every save (arbitrary z
 
 ## What is JSON Canvas?
 
-[JSON Canvas](https://jsoncanvas.org/) is an open file format for infinite canvas data, originally developed for Obsidian Canvas. It promotes longevity, readability, interoperability, and extensibility using the `.canvas` extension and a simple JSON structure with nodes and edges.
-
-Infinite canvas tools organize information spatially like a digital whiteboard.
+[JSON Canvas](https://jsoncanvas.org/) is an open file format for infinite canvas data, originally developed for Obsidian Canvas. It promotes longevity, readability, interoperability, and extensibility using the `.canvas` extension and a simple JSON structure with nodes and edges. Infinite canvas tools organize information spatially like a digital whiteboard.
 
 ## Features
 
