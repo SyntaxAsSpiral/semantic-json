@@ -3,7 +3,7 @@
   "name": "Semantic JSON",
   "version": "0.1.0",
   "minAppVersion": "1.5.0",
-  "description": "Recompiles Canvas files to semantic JSON via visuospatial encoding—arranging position, containment, color, and flow as deterministic JSON for stable diffs and AI ingestion.",
+  "description": "Obsidian plugin that recompiles Canvas files to semantic JSON, encoding their visual semantics into a legible, stable serialization that preserves intent. ",
   "author": "Zach Battin",
   "isDesktopOnly": true
 }
