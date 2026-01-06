@@ -18,7 +18,7 @@ By default, Obsidian "scrambles" the JSON array on every save, discarding richly
 **Benefits:**
 
 💬 JSON becomes **lingua franca** for the shared visuospatial grammar humans and LLMS already use intuitively as subtext for meaning.</br> 
-🤝 Create any structure you can imagine visually or have AI create novel structures, all in valid JSON that renders instantly.</br>
+🤝 Easily template any structure you can imagine or have AI create semantically novel structures, all in valid JSON that renders instantly.</br>
 ✅ Git tracks meaningful changes, LLMs output/consume coherent structure, humans see immediate visual feedback.</br>
 
 ## ⚡ Features
