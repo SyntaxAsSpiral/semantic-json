@@ -8,7 +8,7 @@ JSON Canvas adds 4 visuospatial primitives to JSON. Semantic JSON makes them gra
 
 ## 🎯 Why This Plugin?
 
-Canvas is a visual authoring tool for structured data—spatial arrangement encodes meaning. By default, Obsidian "scrambles" the JSON z-index array on every save, losing that encoded meaning and forcing readers to reconstruct intent. This plugin recompiles the canvas, preserving its visual semantics as stable, deterministic JSON across four dimensions:
+Canvas is a visual authoring tool for structured data—spatial arrangement encodes meaning. By default, Obsidian "scrambles" the JSON array on every save, losing that encoded meaning and forcing readers to reconstruct intent. This plugin recompiles the canvas, preserving its visual semantics as stable, deterministic JSON across four dimensions:
 
 - 📍 **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
 - 📦 **Containment** (bounding boxes) → Hierarchical structure (groups + children)
