@@ -8,24 +8,24 @@ JSON Canvas adds 4 visuospatial primitives to the JSON format. This plugin makes
 
 ## 🎯 Why This Plugin?
 
-By default, Obsidian "scrambles" the JSON array in Canvas files on every save, discarding its implicit meaning and forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its visual semantics as stable, deterministic JSON across four dimensions:
+Obsidian's default handling of the JSON array in Canvas files incidentally discards visually encoded meaning, forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its semantics as stable, deterministic JSON across four dimensions:
 
 - 📍 **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
 - 📦 **Containment** (bounding boxes) → Hierarchical structure (groups + children)
 - 🎨 **Color** (node/edge colors) → Semantic taxonomy (red=urgent, blue=reference, etc.)
 - ➡️ **Directionality** (arrow endpoints) → Information flow topology (source → sink)
 
-### Benefits
+### This greatly **enhances collaboration** between human and machine intelligence.
 
 - **JSON Canvas** format becomes a *lingua franca* for the shared visuospatial grammar that people and AI already use natively.
-- **Obsidian Canvas** becomes a full *WYSIWYG* authoring tool for this richly contextual JSON format, enhancing collaboration between human and machine intelligence.
+- **Obsidian Canvas** becomes a full *WYSIWYG* authoring tool for this richly contextual JSON format.
 
 ## ⚡Features
 
-- **Auto-compile on save**: Canvas files arrange their contents deterministically instead of scrambling
-- **Intuitive JSON Editing**: Watch your no-code JSON structures self-assemble in real-time IDE
+- **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
+- **Intuitive JSON**: Watch your no-code JSON structures self-assemble in real-time IDE
 - **Bidirectional Canvas ⇄ JSON compilation:** import structure, author visually, export semantics
-- **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback.
+- **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
 - **CLI tool**: Included for batch processing or CI pipelines
 - **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
 
