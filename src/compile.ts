@@ -25,6 +25,19 @@ interface NodePosition {
   y?: number;
 }
 
+interface CompileSettings {
+  colorSortNodes?: boolean;
+  colorSortEdges?: boolean;
+  flowSortNodes?: boolean;
+}
+
+interface FlowGroup {
+  nodes: Set<string>; // node IDs in this flow group
+  minY: number;       // top-left position for group sorting
+  minX: number;
+  flowOrder: Map<string, number>; // node ID -> depth in flow
+}
+
 function isFiniteNumber(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value);
 }
@@ -83,8 +96,272 @@ function getNodeColor(node: CanvasNode): string {
   return '';
 }
 
-function stableSortByXY(nodes: CanvasNode[]): CanvasNode[] {
+function getEdgeColor(edge: CanvasEdge): string {
+  const color = edge?.color;
+  if (typeof color === 'string') {
+    return color.toLowerCase();
+  }
+  // No color = empty string (sorts first)
+  return '';
+}
+
+function isDirectionalEdge(edge: CanvasEdge): boolean {
+  const fromEnd = edge?.fromEnd;
+  const toEnd = edge?.toEnd;
+  // Default: fromEnd=none, toEnd=arrow (directional forward)
+  // Non-directional: both are none
+  if (fromEnd === 'arrow' || toEnd === 'arrow') return true;
+  if (toEnd === undefined && fromEnd !== 'arrow') return true; // default arrow at toEnd
+  return false;
+}
+
+function buildFlowGroups(
+  nodes: CanvasNode[],
+  allEdges: CanvasEdge[],
+  nodePositions: Map<string, NodePosition>
+): FlowGroup[] {
+  // Build node ID set for this scope
+  const nodeIdSet = new Set(nodes.map(n => normalizedId(n.id)));
+
+  // Filter edges to only those within this scope
+  const scopedEdges = allEdges.filter(e => {
+    const from = normalizedId(e?.fromNode);
+    const to = normalizedId(e?.toNode);
+    return nodeIdSet.has(from) && nodeIdSet.has(to);
+  });
+
+  // Build adjacency graph (undirected for component detection)
+  const adjacency = new Map<string, Set<string>>();
+
+  // Build directed graph for flow order
+  const outgoing = new Map<string, Set<string>>();
+  const incoming = new Map<string, Set<string>>();
+
+  for (const node of nodes) {
+    const id = normalizedId(node.id);
+    adjacency.set(id, new Set());
+    outgoing.set(id, new Set());
+    incoming.set(id, new Set());
+  }
+
+  for (const edge of scopedEdges) {
+    if (!isDirectionalEdge(edge)) continue;
+
+    const from = normalizedId(edge.fromNode);
+    const to = normalizedId(edge.toNode);
+
+    // Add to component graph (undirected)
+    adjacency.get(from)?.add(to);
+    adjacency.get(to)?.add(from);
+
+    // Determine direction
+    const fromEnd = edge?.fromEnd;
+    const toEnd = edge?.toEnd ?? 'arrow'; // default
+
+    if (fromEnd === 'arrow' && toEnd === 'arrow') {
+      // Bidirectional: just connect, don't add flow direction
+      // Direction inherited from neighbors later
+    } else if (fromEnd === 'arrow') {
+      // Reverse direction: to -> from
+      outgoing.get(to)?.add(from);
+      incoming.get(from)?.add(to);
+    } else {
+      // Forward direction: from -> to (default)
+      outgoing.get(from)?.add(to);
+      incoming.get(to)?.add(from);
+    }
+  }
+
+  // Find connected components
+  const visited = new Set<string>();
+  const components: Set<string>[] = [];
+
+  for (const [nodeId] of adjacency) {
+    if (visited.has(nodeId)) continue;
+
+    const component = new Set<string>();
+    const queue = [nodeId];
+
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      if (visited.has(current)) continue;
+
+      visited.add(current);
+      component.add(current);
+
+      for (const neighbor of adjacency.get(current) || []) {
+        if (!visited.has(neighbor)) {
+          queue.push(neighbor);
+        }
+      }
+    }
+
+    if (component.size > 1) {
+      // Only include multi-node components (actual flow groups)
+      components.push(component);
+    }
+  }
+
+  // For each component, calculate topological order and min position
+  const flowGroups: FlowGroup[] = [];
+
+  for (const component of components) {
+    // Calculate min position
+    let minY = Infinity;
+    let minX = Infinity;
+
+    for (const nodeId of component) {
+      const pos = nodePositions.get(nodeId);
+      const y = isFiniteNumber(pos?.y) ? pos.y : 0;
+      const x = isFiniteNumber(pos?.x) ? pos.x : 0;
+      if (y < minY || (y === minY && x < minX)) {
+        minY = y;
+        minX = x;
+      }
+    }
+
+    // Topological sort (BFS-based level assignment)
+    const flowOrder = new Map<string, number>();
+    const inDegree = new Map<string, number>();
+
+    for (const nodeId of component) {
+      let degree = 0;
+      for (const source of incoming.get(nodeId) || []) {
+        if (component.has(source)) degree++;
+      }
+      inDegree.set(nodeId, degree);
+    }
+
+    const queue: string[] = [];
+    for (const nodeId of component) {
+      if (inDegree.get(nodeId) === 0) {
+        queue.push(nodeId);
+        flowOrder.set(nodeId, 0);
+      }
+    }
+
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      const currentDepth = flowOrder.get(current) || 0;
+
+      for (const next of outgoing.get(current) || []) {
+        if (!component.has(next)) continue;
+
+        const degree = inDegree.get(next)! - 1;
+        inDegree.set(next, degree);
+
+        // Update depth to max of incoming depths + 1
+        const nextDepth = Math.max(flowOrder.get(next) || 0, currentDepth + 1);
+        flowOrder.set(next, nextDepth);
+
+        if (degree === 0) {
+          queue.push(next);
+        }
+      }
+    }
+
+    // Handle cycles: nodes without depth get max depth + 1
+    for (const nodeId of component) {
+      if (!flowOrder.has(nodeId)) {
+        const maxDepth = Math.max(...Array.from(flowOrder.values()), 0);
+        flowOrder.set(nodeId, maxDepth + 1);
+      }
+    }
+
+    flowGroups.push({
+      nodes: component,
+      minY,
+      minX,
+      flowOrder,
+    });
+  }
+
+  return flowGroups;
+}
+
+function stableSortByXY(
+  nodes: CanvasNode[],
+  settings?: CompileSettings,
+  allEdges?: CanvasEdge[],
+  nodePositions?: Map<string, NodePosition>
+): CanvasNode[] {
+  // Build flow groups if flow sorting is enabled
+  let flowGroups: FlowGroup[] = [];
+  const nodeToFlowGroup = new Map<string, FlowGroup>();
+
+  if (settings?.flowSortNodes && allEdges && nodePositions) {
+    flowGroups = buildFlowGroups(nodes, allEdges, nodePositions);
+
+    // Map nodes to their flow groups
+    for (const group of flowGroups) {
+      for (const nodeId of group.nodes) {
+        nodeToFlowGroup.set(nodeId, group);
+      }
+    }
+  }
+
   nodes.sort((a, b) => {
+    const aId = normalizedId(a?.id);
+    const bId = normalizedId(b?.id);
+
+    // Flow-based sorting
+    if (settings?.flowSortNodes) {
+      const aGroup = nodeToFlowGroup.get(aId);
+      const bGroup = nodeToFlowGroup.get(bId);
+
+      // If both in flow groups
+      if (aGroup && bGroup) {
+        // Same group: sort by flow depth (overrides type priority!)
+        if (aGroup === bGroup) {
+          const aDepth = aGroup.flowOrder.get(aId) || 0;
+          const bDepth = bGroup.flowOrder.get(bId) || 0;
+          if (aDepth !== bDepth) return aDepth - bDepth;
+
+          // Same depth: sort by spatial position, then color, then content
+          const ay = isFiniteNumber(a?.y) ? a.y : 0;
+          const by = isFiniteNumber(b?.y) ? b.y : 0;
+          if (ay !== by) return ay - by;
+
+          const ax = isFiniteNumber(a?.x) ? a.x : 0;
+          const bx = isFiniteNumber(b?.x) ? b.x : 0;
+          if (ax !== bx) return ax - bx;
+
+          // Color sorting (optional)
+          if (settings?.colorSortNodes !== false) {
+            const aColor = getNodeColor(a);
+            const bColor = getNodeColor(b);
+            if (aColor !== bColor) return aColor.localeCompare(bColor);
+          }
+
+          // Content sorting
+          return getNodeSortKey(a).localeCompare(getNodeSortKey(b));
+        } else {
+          // Different groups: sort by group's top-left position
+          if (aGroup.minY !== bGroup.minY) return aGroup.minY - bGroup.minY;
+          if (aGroup.minX !== bGroup.minX) return aGroup.minX - bGroup.minX;
+          // Groups at same position: shouldn't happen, but fall through
+        }
+      } else if (aGroup && !bGroup) {
+        // A in flow group, B isolated: compare A's group position to B's position
+        const by = isFiniteNumber(b?.y) ? b.y : 0;
+        const bx = isFiniteNumber(b?.x) ? b.x : 0;
+        if (aGroup.minY !== by) return aGroup.minY - by;
+        if (aGroup.minX !== bx) return aGroup.minX - bx;
+        // If positions equal, flow group comes first
+        return -1;
+      } else if (!aGroup && bGroup) {
+        // A isolated, B in flow group
+        const ay = isFiniteNumber(a?.y) ? a.y : 0;
+        const ax = isFiniteNumber(a?.x) ? a.x : 0;
+        if (ay !== bGroup.minY) return ay - bGroup.minY;
+        if (ax !== bGroup.minX) return ax - bGroup.minX;
+        // If positions equal, flow group comes first
+        return 1;
+      }
+      // Both isolated: fall through to standard sorting
+    }
+
+    // Spatial sorting
     const ay = isFiniteNumber(a?.y) ? a.y : 0;
     const by = isFiniteNumber(b?.y) ? b.y : 0;
     if (ay !== by) return ay - by;
@@ -93,15 +370,17 @@ function stableSortByXY(nodes: CanvasNode[]): CanvasNode[] {
     const bx = isFiniteNumber(b?.x) ? b.x : 0;
     if (ax !== bx) return ax - bx;
 
-    // Sort by type priority (content nodes before link nodes)
+    // Sort by type priority (content nodes before link nodes) - only for non-flow nodes
     const aPriority = getNodeTypePriority(a);
     const bPriority = getNodeTypePriority(b);
     if (aPriority !== bPriority) return aPriority - bPriority;
 
-    // Sort by color (groups same-colored nodes together)
-    const aColor = getNodeColor(a);
-    const bColor = getNodeColor(b);
-    if (aColor !== bColor) return aColor.localeCompare(bColor);
+    // Sort by color (groups same-colored nodes together) - optional
+    if (settings?.colorSortNodes !== false) {
+      const aColor = getNodeColor(a);
+      const bColor = getNodeColor(b);
+      if (aColor !== bColor) return aColor.localeCompare(bColor);
+    }
 
     // Then by content
     return getNodeSortKey(a).localeCompare(getNodeSortKey(b));
@@ -111,12 +390,55 @@ function stableSortByXY(nodes: CanvasNode[]): CanvasNode[] {
 
 function stableEdgeSortByTopology(
   edges: CanvasEdge[],
-  nodePositions: Map<string, NodePosition>
+  nodePositions: Map<string, NodePosition>,
+  settings?: CompileSettings,
+  nodes?: CanvasNode[]
 ): CanvasEdge[] {
+  // Build flow groups if flow sorting is enabled
+  let nodeToFlowGroup = new Map<string, FlowGroup>();
+
+  if (settings?.flowSortNodes && nodes) {
+    const flowGroups = buildFlowGroups(nodes, edges, nodePositions);
+    for (const group of flowGroups) {
+      for (const nodeId of group.nodes) {
+        nodeToFlowGroup.set(nodeId, group);
+      }
+    }
+  }
+
   edges.sort((a, b) => {
+    const aFromId = normalizedId(a?.fromNode);
+    const bFromId = normalizedId(b?.fromNode);
+    const aToId = normalizedId(a?.toNode);
+    const bToId = normalizedId(b?.toNode);
+
+    // Flow-based sorting (if enabled)
+    if (settings?.flowSortNodes && nodeToFlowGroup.size > 0) {
+      const aFromGroup = nodeToFlowGroup.get(aFromId);
+      const bFromGroup = nodeToFlowGroup.get(bFromId);
+
+      // Sort by fromNode flow depth if both in flow groups
+      if (aFromGroup && bFromGroup) {
+        const aFromDepth = aFromGroup.flowOrder.get(aFromId) ?? Infinity;
+        const bFromDepth = bFromGroup.flowOrder.get(bFromId) ?? Infinity;
+        if (aFromDepth !== bFromDepth) return aFromDepth - bFromDepth;
+      }
+
+      const aToGroup = nodeToFlowGroup.get(aToId);
+      const bToGroup = nodeToFlowGroup.get(bToId);
+
+      // Sort by toNode flow depth if both in flow groups
+      if (aToGroup && bToGroup) {
+        const aToDepth = aToGroup.flowOrder.get(aToId) ?? Infinity;
+        const bToDepth = bToGroup.flowOrder.get(bToId) ?? Infinity;
+        if (aToDepth !== bToDepth) return aToDepth - bToDepth;
+      }
+    }
+
+    // Spatial sorting (fallback or primary when flow disabled)
     // Get fromNode positions
-    const aFrom = nodePositions.get(normalizedId(a?.fromNode));
-    const bFrom = nodePositions.get(normalizedId(b?.fromNode));
+    const aFrom = nodePositions.get(aFromId);
+    const bFrom = nodePositions.get(bFromId);
 
     // Sort by fromNode y position
     const afy = isFiniteNumber(aFrom?.y) ? aFrom.y : 0;
@@ -129,8 +451,8 @@ function stableEdgeSortByTopology(
     if (afx !== bfx) return afx - bfx;
 
     // Get toNode positions
-    const aTo = nodePositions.get(normalizedId(a?.toNode));
-    const bTo = nodePositions.get(normalizedId(b?.toNode));
+    const aTo = nodePositions.get(aToId);
+    const bTo = nodePositions.get(bToId);
 
     // Sort by toNode y position
     const aty = isFiniteNumber(aTo?.y) ? aTo.y : 0;
@@ -142,6 +464,13 @@ function stableEdgeSortByTopology(
     const btx = isFiniteNumber(bTo?.x) ? bTo.x : 0;
     if (atx !== btx) return atx - btx;
 
+    // Sort by color (groups same-colored edges together) - optional
+    if (settings?.colorSortEdges !== false) {
+      const aColor = getEdgeColor(a);
+      const bColor = getEdgeColor(b);
+      if (aColor !== bColor) return aColor.localeCompare(bColor);
+    }
+
     // Fallback to ID for deterministic ordering
     const aid = normalizedId(a?.id);
     const bid = normalizedId(b?.id);
@@ -150,7 +479,7 @@ function stableEdgeSortByTopology(
   return edges;
 }
 
-export function compileCanvasAll({ input }: { input: CanvasData }): CanvasData {
+export function compileCanvasAll({ input, settings }: { input: CanvasData; settings?: CompileSettings }): CanvasData {
   const nodes = Array.isArray(input?.nodes) ? [...input.nodes] : [];
   const edges = Array.isArray(input?.edges) ? [...input.edges] : [];
 
@@ -194,9 +523,9 @@ export function compileCanvasAll({ input }: { input: CanvasData }): CanvasData {
   }
 
   const parentMap = buildHierarchy(nodes);
-  const outNodes = flattenHierarchical(nodes, parentMap);
+  const outNodes = flattenHierarchical(nodes, parentMap, settings, edges, nodePositions);
   const outEdges = [...edges];
-  stableEdgeSortByTopology(outEdges, nodePositions);
+  stableEdgeSortByTopology(outEdges, nodePositions, settings, nodes);
 
   return { nodes: outNodes, edges: outEdges };
 }
@@ -270,7 +599,13 @@ function buildHierarchy(nodes: CanvasNode[]): Map<string, CanvasNode[]> {
   return parentMap;
 }
 
-function flattenHierarchical(nodes: CanvasNode[], parentMap: Map<string, CanvasNode[]>): CanvasNode[] {
+function flattenHierarchical(
+  nodes: CanvasNode[],
+  parentMap: Map<string, CanvasNode[]>,
+  settings?: CompileSettings,
+  allEdges?: CanvasEdge[],
+  nodePositions?: Map<string, NodePosition>
+): CanvasNode[] {
   const groups = nodes.filter((n) => n?.type === 'group');
   const nonGroups = nodes.filter((n) => n?.type !== 'group');
   const result: CanvasNode[] = [];
@@ -285,7 +620,7 @@ function flattenHierarchical(nodes: CanvasNode[], parentMap: Map<string, CanvasN
 
     if (node.type === 'group' && parentMap.has(nodeId)) {
       const children = parentMap.get(nodeId)!;
-      stableSortByXY(children);
+      stableSortByXY(children, settings, allEdges, nodePositions);
 
       const childGroups = children.filter((c) => c?.type === 'group');
       const childNonGroups = children.filter((c) => c?.type !== 'group');
@@ -319,8 +654,8 @@ function flattenHierarchical(nodes: CanvasNode[], parentMap: Map<string, CanvasN
     return true;
   });
 
-  stableSortByXY(rootNodes);
-  stableSortByXY(rootGroups);
+  stableSortByXY(rootNodes, settings, allEdges, nodePositions);
+  stableSortByXY(rootGroups, settings, allEdges, nodePositions);
 
   for (const node of rootNodes) {
     addNodeAndChildren(node);

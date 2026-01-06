@@ -62,7 +62,14 @@ export default class SemanticJsonPlugin extends Plugin {
     try {
       const raw = await this.app.vault.read(file);
       const parsed = JSON.parse(raw);
-      const output = compileCanvasAll({ input: parsed });
+      const output = compileCanvasAll({
+        input: parsed,
+        settings: {
+          colorSortNodes: this.settings.colorSortNodes,
+          colorSortEdges: this.settings.colorSortEdges,
+          flowSortNodes: this.settings.flowSortNodes,
+        },
+      });
       const serialized = JSON.stringify(output, null, 2) + '\n';
 
       // Create .json filename (replace .canvas with .json)
@@ -92,7 +99,14 @@ export default class SemanticJsonPlugin extends Plugin {
     try {
       const raw = await this.app.vault.read(file);
       const parsed = JSON.parse(raw);
-      const output = compileCanvasAll({ input: parsed });
+      const output = compileCanvasAll({
+        input: parsed,
+        settings: {
+          colorSortNodes: this.settings.colorSortNodes,
+          colorSortEdges: this.settings.colorSortEdges,
+          flowSortNodes: this.settings.flowSortNodes,
+        },
+      });
       const serialized = JSON.stringify(output, null, 2) + '\n';
 
       if (serialized === raw) {
