@@ -113,11 +113,6 @@ This transforms spatial diagrams into linear narratives that preserve visual sem
 ## 🧪 Examples
 
 See [`examples/conformance-test-card.canvas`](./examples/conformance-test-card.canvas) for a self-documenting test demonstrating:
-- Hierarchical group containment
-- Spatial grid ordering (3×3 table)
-- Nested parent-child groups
-- Color-coded nodes and edges
-- Directional flow patterns (horizontal green edges, vertical cyan edges)
 
 The test card is pre-sorted in the repo, so opening it in Obsidian and saving will scramble it—demonstrating exactly what this plugin fixes.
 
