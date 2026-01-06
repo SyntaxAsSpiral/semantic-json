@@ -31,12 +31,14 @@ By default, Obsidian "scrambles" the JSON array in Canvas files on every save, d
 
 ## 📥 Installation
 
-### From Obsidian Community Plugins
+### Early Access / Beta Installation
 
-1. Open Obsidian Settings
-2. Navigate to Community Plugins
-3. Search for "Semantic JSON"
-4. Click Install, then Enable
+Use BRAT (Beta Reviewer's Auto-update Tool) to install:
+
+1. Install BRAT from Obsidian Community Plugins
+2. Open Command Palette → "BRAT: Add beta plugin"
+3. Paste: https://github.com/SyntaxAsSpiral/semantic-json
+4. Add & enable the plugin
 
 ### Manual Installation
 
