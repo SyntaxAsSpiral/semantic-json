@@ -17,8 +17,8 @@ By default, Obsidian "scrambles" the JSON array in Canvas files on every save, d
 
 ### Benefits
 
-- JSON Canvas becomes **lingua franca** for the shared visuospatial grammar that language uses natively.
-- Obsidian Canvas becomes an intuitive **WYSIWYG** editor for this richly contextual JSON format, enhancing collaboration between human and machine intelligence.
+- **JSON Canvas** format becomes a *lingua franca* for the shared visuospatial grammar that people and AI already use natively.
+- **Obsidian Canvas** becomes an intuitive *WYSIWYG* authoring tool for this richly contextual JSON format, enhancing collaboration between human and machine intelligence.
 
 ## ⚡ Features
 
