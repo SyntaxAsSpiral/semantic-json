@@ -18,7 +18,7 @@ Canvas is a visual authoring tool for structured data—spatial arrangement enco
 **Benefits:**
 
   - 🔄 **Shared generative grammar**: Humans compose spatially, AI composes semantically, canvas renders identically
-  - 🤝 **Bidirectional authoring**: Template anything in canvas, AI generates semantically valid JSON, structures render instantly, inventing novel compositions using the same visual grammar
+  - 🤝 **Bidirectional authoring**: Template anything in canvas, AI generates novel, semantically valid JSON, structures render instantly.
   - ✅ **Clean diffs + stable semantics**: Git tracks meaningful changes, LLMs output/consume coherent structure, humans see immediate visual feedback
 
 ## ⚡ Features
