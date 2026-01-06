@@ -23,7 +23,6 @@ By default, Obsidian "scrambles" `.canvas` file entries on every save—nodes ap
 
 ## Features
 
-- **Visuospatial encoding**: Reads canvas as a visual language—position, containment, color, and directional flow all encode semantic meaning
 - **Auto-compile on save**: Seamless workflow—canvas files automatically reorder when saved
 - **Hierarchical ordering**: Groups followed immediately by their contents, depth-first traversal
 - **Content-based sorting**: Nodes sort by semantic content (text/file path/URL/label) instead of random IDs
