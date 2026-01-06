@@ -8,7 +8,7 @@
 
 ## Why This Plugin?
 
-By default, Obsidian "scrambles" the z-index array on every save causing nodes to appear in random creation order, losing spatial and structural meaning. This plugin reads the canvas as a **visual language**, encoding four visual dimensions into stable, deterministic JSON:
+By default, Obsidian "scrambles" the z-index array on every save, losing spatial and structural meaning. This plugin reads the canvas as a **visual language**, encoding four visual dimensions into stable, deterministic JSON:
 
 - **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
 - **Containment** (bounding boxes) → Hierarchical structure (groups + children)
