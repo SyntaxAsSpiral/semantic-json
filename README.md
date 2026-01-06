@@ -112,9 +112,7 @@ This transforms spatial diagrams into linear narratives that preserve visual sem
 
 ## 🧪 Examples
 
-See [`examples/conformance-test-card.canvas`](./examples/conformance-test-card.canvas) for a self-documenting test demonstrating:
-
-The test card is pre-sorted in the repo, so opening it in Obsidian and saving will scramble it—demonstrating exactly what this plugin fixes.
+See [`examples/conformance-test-card.canvas`](./examples/conformance-test-card.canvas) for a self-documenting test. The test card is pre-sorted in the repo, so opening it in Obsidian and saving will scramble it—demonstrating exactly what this plugin fixes.
 
 ## Development
 
