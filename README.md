@@ -1,6 +1,6 @@
 # ◈ Semantic JSON
 
-JSON Canvas adds 4 visuospatial primitives to JSON. Semantic JSON makes them grammatical for human visual authoring and AI semantic generation by compiling Canvas files to deterministic semantic JSON legible to both.
+Semantic JSON exists because spatial structure already carries meaning — hierarchy, flow, grouping, and emphasis are authored visually, but lost during serialization. This plugin preserves that intent without changing how canvases render or introducing new schema.
 
 ## What is JSON Canvas?
 
