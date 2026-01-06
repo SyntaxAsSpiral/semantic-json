@@ -1,4 +1,4 @@
-# Semantic JSON
+# ◈ Semantic JSON
 
 JSON Canvas adds 4 visuospatial primitives to JSON. Semantic JSON makes them grammatical for human visual authoring and AI semantic generation by compiling Canvas files to deterministic semantic JSON readable and writable by both.
 
@@ -6,22 +6,22 @@ JSON Canvas adds 4 visuospatial primitives to JSON. Semantic JSON makes them gra
 
 [JSON Canvas](https://jsoncanvas.org/) is an open file format for infinite canvas data, originally developed for Obsidian Canvas. It promotes longevity, readability, interoperability, and extensibility using the `.canvas` extension and a simple JSON structure with nodes and edges. Infinite canvas tools organize information **spatially** like a digital whiteboard.
 
-## Why This Plugin?
+## 🎯 Why This Plugin?
 
 Canvas is a visual authoring tool for structured data—spatial arrangement encodes meaning. By default, Obsidian "scrambles" the z-index array on every save, losing that encoded meaning. This plugin recompiles the canvas, preserving its visual semantics as stable, deterministic JSON across four dimensions:
 
-- **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
-- **Containment** (bounding boxes) → Hierarchical structure (groups + children)
-- **Color** (node/edge colors) → Semantic taxonomy (red=urgent, blue=reference, etc.)
-- **Directionality** (arrow endpoints) → Information flow topology (source → sink)
+- 📍 **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
+- 📦 **Containment** (bounding boxes) → Hierarchical structure (groups + children)
+- 🎨 **Color** (node/edge colors) → Semantic taxonomy (red=urgent, blue=reference, etc.)
+- ➡️ **Directionality** (arrow endpoints) → Information flow topology (source → sink)
 
 **Benefits:**
 
-  - **Shared generative grammar**: Humans compose spatially, AI composes semantically, canvas renders identically
-  - **Bidirectional authoring**: Template anything in canvas, AI generates semantically valid JSON, structures render instantly, inventing novel compositions using the same visual grammar
-  - **Clean diffs + stable semantics**: Git tracks meaningful changes, LLMs output/consume coherent structure, humans see immediate visual feedback
+  - 🔄 **Shared generative grammar**: Humans compose spatially, AI composes semantically, canvas renders identically
+  - 🤝 **Bidirectional authoring**: Template anything in canvas, AI generates semantically valid JSON, structures render instantly, inventing novel compositions using the same visual grammar
+  - ✅ **Clean diffs + stable semantics**: Git tracks meaningful changes, LLMs output/consume coherent structure, humans see immediate visual feedback
 
-## Features
+## ⚡ Features
 
 - **Auto-compile on save**: Seamless workflow—canvas files automatically reorder when saved
 - **Hierarchical ordering**: Groups followed immediately by their contents, depth-first traversal
@@ -32,7 +32,7 @@ Canvas is a visual authoring tool for structured data—spatial arrangement enco
 - **CLI tool**: Included for batch processing or CI pipelines
 - **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
 
-## Installation
+## 📥 Installation
 
 ### From Obsidian Community Plugins
 
@@ -48,7 +48,7 @@ Canvas is a visual authoring tool for structured data—spatial arrangement enco
 3. Reload Obsidian
 4. Enable "Semantic JSON" in Community Plugins settings
 
-## Usage
+## 🚀 Usage
 
 ### Commands (via Command Palette)
 
@@ -62,7 +62,7 @@ Canvas is a visual authoring tool for structured data—spatial arrangement enco
 - **Color sort edges** (default: enabled): Group edges by color within same topology
 - **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
 
-## Standalone CLI Tool
+## 💻 Standalone CLI Tool
 
 Full feature parity with the plugin—enables batch processing, CI/CD pipelines, and programmatic canvas compilation.
 
@@ -79,7 +79,7 @@ node cli/canvas-compile.mjs --in file.canvas --out file.canvas
 --flow-sort / --no-flow-sort      # Flow topology sorting (default: false)
 ```
 
-## Specification
+## 📖 Specification
 
 Full technical specification available in [`semantic-json-spec.md`](./semantic-json-spec.md).
 
@@ -110,7 +110,7 @@ Full technical specification available in [`semantic-json-spec.md`](./semantic-j
 
 This transforms spatial diagrams into linear narratives that preserve visual semantics, making flow diagrams, system architectures, and knowledge graphs immediately legible to LLMs without spatial reconstruction.
 
-## Examples
+## 🧪 Examples
 
 See [`examples/conformance-test-card.canvas`](./examples/conformance-test-card.canvas) for a self-documenting test demonstrating:
 - Hierarchical group containment
