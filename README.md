@@ -1,13 +1,5 @@
 # ◈ Semantic JSON
 
-JSON Canvas adds 4 visuospatial primitives to the JSON format. This plugin makes them grammatical for human visual authoring and AI generation by compiling Canvas files into deterministic, semantically legible JSON artifacts for agentic workflows and human–AI collaboration.
-
-## What is JSON Canvas?
-
-[JSON Canvas](https://jsoncanvas.org/) is an open file format for infinite canvas data, originally developed for Obsidian Canvas. It promotes longevity, readability, interoperability, and extensibility using the `.canvas` extension and a simple JSON structure with nodes and edges. Infinite canvas tools organize information **spatially** like a digital whiteboard.
-
-## 🎯 Why This Plugin?
-
 Obsidian's default handling of the JSON array in Canvas files incidentally discards visually encoded meaning, forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its semantics as stable, deterministic JSON across four dimensions:
 
 - 📍 **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
@@ -83,6 +75,10 @@ node cli/canvas-compile.mjs --in file.canvas --strip-metadata
 --flow-sort / --no-flow-sort      # Flow topology sorting (default: false)
 --strip-metadata                  # Strip Canvas metadata for pure JSON export
 ```
+
+## What is JSON Canvas?
+
+[JSON Canvas](https://jsoncanvas.org/) is an open file format for infinite canvas data, originally developed for Obsidian Canvas. It promotes longevity, readability, interoperability, and extensibility using the `.canvas` extension and a simple JSON structure with nodes and edges. Infinite canvas tools organize information **spatially** like a digital whiteboard.
 
 ## 📖 Specification
 
