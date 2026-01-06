@@ -76,15 +76,12 @@ node cli/canvas-compile.mjs --in file.canvas --strip-metadata
 --strip-metadata                  # Strip Canvas metadata for pure JSON export
 ```
 
-## What is JSON Canvas?
+## 📖 What is JSON Canvas?
 
 [JSON Canvas](https://jsoncanvas.org/) is an open file format for infinite canvas data, originally developed for Obsidian Canvas. It promotes longevity, readability, interoperability, and extensibility using the `.canvas` extension and a simple JSON structure with nodes and edges. Infinite canvas tools organize information **spatially** like a digital whiteboard.
 
-## 📖 Specification
-
-Full technical specification available in [`semantic-json-spec.md`](./semantic-json-spec.md).
-
 ### Compilation Process
+Full technical specification available in [`semantic-json-spec.md`](./semantic-json-spec.md).
 
 - **Hierarchical ordering**: Groups followed immediately by their contents, depth-first traversal
 - **Content-based sorting**: Nodes sort by semantic content (text/file path/URL/label) instead of random IDs
