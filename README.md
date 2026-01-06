@@ -1,6 +1,6 @@
 # Semantic JSON
 
-Visual-semantic grammar for Canvas, adds 4 visuospatial primitives creating shared language between human spatial authoring and AI semantic generation. Compiles to deterministic JSON readable and writable by both.
+Visual-semantic grammar for Canvas, reveals 4 visuospatial primitives for creating shared language between human spatial authoring and AI semantic generation. Compiles to deterministic JSON readable and writable by both.
 
 ## What is JSON Canvas?
 
