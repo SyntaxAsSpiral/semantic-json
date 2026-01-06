@@ -105,84 +105,162 @@ Specific values for the preset colors are intentionally not defined so that appl
 
 ## Semantic JSON Compilation
 
-Semantic JSON extends the base JSON Canvas spec with **compiled ordering** for stable, deterministic serialization. This enables:
+Semantic JSON extends the base JSON Canvas spec with **compiled ordering** of z-index array for stable, deterministic serialization. This enables:
 - Stable diffs for version control
 - Predictable LLM ingestion
-- Semantic spatial encoding (visual position → logical order)
+- Visuospatial encoding (visual field semantics → logical order)
+
+**Visual dimensions encoded:**
+- **Position** (x, y) → Linear reading sequence
+- **Containment** (bounding boxes) → Hierarchical structure
+- **Color** (node/edge colors) → Semantic taxonomy/categories
+- **Directionality** (arrow endpoints) → Information flow topology
+
+The plugin reads the canvas as a **visual language**, where position, containment, color, and directional flow all carry semantic meaning that gets compiled into stable, linear JSON order.
 
 ### Compiled Node Ordering
 
 Nodes are reordered **hierarchically** based on spatial containment:
 
 1. **Root orphan nodes** (not contained by any group)
-   - Sorted by `y` (ascending), then `x` (ascending), then **content** (lexicographic)
+   - Sorted using the rules below (spatial/flow + type + color + content)
 
 2. **Root groups** (not nested within other groups)
-   - Sorted by `y` (ascending), then `x` (ascending), then **content** (lexicographic)
+   - Sorted using the rules below (spatial/flow + type + color + content)
    - Immediately followed by their **contained nodes**:
-     - Non-group children first (sorted by y, x, content)
-     - Nested group children (sorted by y, x, content), each followed recursively by their contents
+     - Non-group children first (sorted by rules below)
+     - Nested group children (sorted by rules below), each followed recursively by their contents
 
-**Sorting within spatial positions**:
+This creates depth-first traversal: each group appears immediately followed by all its contents before the next sibling group.
 
-Nodes at the same x,y position are sorted by:
-1. **Node type priority**: Link nodes always sort to bottom (like footnotes), content nodes (text/file/group) sort first
-2. **Color**: Nodes with same color group together (preserves visual semantic categories)
+#### Sorting Rules
+
+When **flow sorting is disabled** (default), nodes within each scope are sorted by:
+1. **Spatial position**: y (ascending), then x (ascending)
+2. **Node type priority**: Link nodes always sort to bottom (like footnotes), content nodes (text/file/group) sort first
+3. **Color** (optional, enabled by default): Nodes with same color group together (preserves visual semantic categories)
    - Uncolored nodes appear first
    - Colored nodes sort alphabetically by color value (hex or preset number)
-3. **Content**: Within each color group, sorted alphabetically by semantic content:
+   - Can be disabled in plugin settings
+4. **Content**: Sorted alphabetically by semantic content:
    - **Text nodes**: sorted by text content
    - **File nodes**: sorted by file path
    - **Link nodes**: sorted by raw URL (preserves protocol)
    - **Group nodes**: sorted by label
    - Falls back to node ID if no content available
 
-**Rationale**:
-- Link nodes function as references/citations, so appear after primary content like footnotes
-- Color grouping preserves visual taxonomy (e.g., red = urgent, blue = reference, yellow = in-progress)
+When **flow sorting is enabled** (optional, disabled by default), nodes within each scope are sorted by:
 
-**Containment detection**: A node is contained by a group if its bounding box (x, y, width, height) falls entirely within the group's bounding box. For overlapping groups, the smallest containing group is chosen.
+**For nodes in flow groups** (connected by directional edges):
+1. **Flow group position**: Flow groups (connected components) sort by their top-left node (min y, min x)
+   - Actual group boundaries contain flow groups (cross-group edges are ignored)
+2. **Flow depth**: Within a flow group, sort **exclusively** by topological order
+   - Source nodes (only outgoing arrows): depth 0
+   - Intermediate nodes: depth based on longest path from source
+   - Sink nodes (only incoming arrows): highest depth
+   - **Flow depth overrides node type priority**: Link nodes appear in flow order, not pushed to bottom
+3. **Spatial position**: Within same flow depth, sort by y (ascending), then x (ascending)
+4. **Color** (optional, enabled by default): Within same flow depth and position, group same-colored nodes
+5. **Content**: Within same depth/position/color, sort alphabetically by semantic content
 
-**Rationale**: Hierarchical ordering makes group structure explicit. LLMs can read "here's a group, here's what it contains" in linear order without having to reconstruct spatial relationships.
+**For isolated nodes** (not in any flow group):
+1. **Spatial position**: y (ascending), then x (ascending)
+2. **Node type priority**: Link nodes sort to bottom (like footnotes)
+3. **Color** (optional, enabled by default): Groups same-colored nodes together
+4. **Content**: Alphabetical by semantic content
+
+**Edge directionality**:
+- **Forward arrow** (`fromEnd: none`, `toEnd: arrow`): Standard directional flow (default)
+- **Reverse arrow** (`fromEnd: arrow`, `toEnd: none`): Reverse flow (dependency)
+- **Bidirectional** (`fromEnd: arrow`, `toEnd: arrow`): Chain connector that inherits direction from neighbors
+  - `→ ↔ →` becomes `→ → →` (forward chain)
+  - `← ↔ →` becomes `← ← →` (split point)
+- **Non-directional** (`fromEnd: none`, `toEnd: none`): Ignored for flow analysis
+
+#### Visual Semantics
+
+**Link node placement**: Link nodes function as references/citations, appearing after primary content (like footnotes) when not in a flow group.
+
+**Color taxonomy**: Color grouping (when enabled) preserves visual semantic categories:
+- Red = urgent/error
+- Orange = warning
+- Yellow = in-progress
+- Green = success/complete
+- Cyan = info/reference
+- Purple = special/custom
+
+**Flow topology**: When flow sorting is enabled, directional arrows define information flow, transforming spatial diagrams into linear reading order based on dependency graphs. Workflows and pipelines become sequential narratives.
+
+**Hierarchical containment**: Spatial containment (bounding boxes) creates explicit nesting. A node is contained by a group if its bounding box (x, y, width, height) falls entirely within the group's bounding box. For overlapping groups, the smallest containing group is chosen. This makes group structure explicit for linear readers without requiring spatial reconstruction.
 
 **Example order**: `orphan-1` → `group-A` → `group-A-child-1` → `group-A-child-2` → `nested-group-B` → `nested-group-B-child-1` → `group-C` → ...
 
-**Spatial interpretation**: Top-left to bottom-right reading order, depth-first through the containment hierarchy.
-
-**Z-index preservation**: While compiled ordering ignores z-index for serialization, z-index is preserved as node metadata and can be restored on canvas load.
+**Reading order**: Top-left to bottom-right spatial interpretation, depth-first through the containment hierarchy (or topological flow order when flow sorting enabled).
 
 ### Compiled Edge Ordering
 
-Edges are sorted by **spatial topology** rather than arbitrary IDs:
+When **flow sorting is disabled** (default), edges are sorted by **spatial topology**:
 
-1. By `fromNode` spatial position:
-   - Sorted by `fromNode.y` (ascending)
-   - Then by `fromNode.x` (ascending)
+1. **fromNode position**: Sort by fromNode's y position (ascending), then x position (ascending)
+2. **toNode position**: Sort by toNode's y position (ascending), then x position (ascending)
+3. **Color** (optional, enabled by default): Group edges with same color together
+   - Uncolored edges appear first
+   - Colored edges sort alphabetically by color value (hex or preset number)
+   - Can be disabled in plugin settings
+4. **Edge ID**: Fallback to ID (lexicographic) for deterministic ordering
 
-2. Then by `toNode` spatial position:
-   - Sorted by `toNode.y` (ascending)
-   - Then by `toNode.x` (ascending)
+When **flow sorting is enabled** (optional, disabled by default), edges inherit their connected nodes' flow order:
 
-3. Fallback to `id` (lexicographic) for deterministic ordering
+1. **fromNode flow depth**: If fromNode is in a flow group, sort by its flow depth (topological order)
+2. **toNode flow depth**: If toNode is in a flow group, sort by its flow depth (topological order)
+3. **Spatial fallback**: For edges between isolated nodes (not in flow groups), use spatial positions (y, x)
+4. **Color** (optional, enabled by default): Group edges with same color together
+5. **Edge ID**: Fallback to ID for deterministic ordering
 
-**Rationale**: Topology-based sorting encodes information flow and spatial relationships. Edges appear in the order a reader would trace them visually (top-to-bottom, left-to-right). This makes flow diagrams, system architectures, and causal chains immediately legible to LLMs reading the JSON.
+#### Edge Visual Semantics
 
-**Example**: In a left-to-right data pipeline, edges appear sequentially showing transformation flow rather than random ID order.
+**Spatial topology**: Edges encode directional information flow. They appear in the order a reader would trace them visually (top-to-bottom, left-to-right).
+
+**Color-coded flows**: Edge colors (when enabled) preserve visual flow semantics:
+- Green = success path / horizontal connections
+- Red = error path / critical flow
+- Cyan = vertical connections / downward flow
+- Yellow = alternative path / horizontal flow
+- Orange = warning path
+- Purple = special connections
+
+**Flow inheritance**: When flow sorting is enabled, edges follow the topological order of their connected nodes rather than spatial positions. This transforms flow diagrams, system architectures, and dependency graphs into sequential narratives where edges appear in execution/causation order.
+
+**Example**: In a data pipeline `Extract → Transform → Load`, edges appear as: `Extract→Transform`, `Transform→Load` (sequential flow) rather than random ID order.
+
+### Compilation Settings
+
+The following sorting options can be configured in plugin settings:
+
+- **Auto-compile on save** (default: enabled): Automatically compile canvas files when saved
+- **Color sort nodes** (default: enabled): Group nodes by color within same position
+- **Color sort edges** (default: enabled): Group edges by color within same topology
+- **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
 
 ### Validation Rules
 
-Compilation enforces:
+Compilation enforces strict validation:
 - All nodes must have unique, non-empty `id`
 - All edges must have unique, non-empty `id`
 - Edges must reference existing node IDs in `fromNode` and `toNode`
+- Node IDs are normalized (trimmed whitespace, string coercion for numbers/booleans)
 
-Invalid canvases will throw errors during compilation.
+Invalid canvases throw descriptive errors during compilation.
 
 ### Serialization Format
 
-Compiled output uses:
-- 2-space indentation
-- Trailing newline
-- UTF-8 encoding
+Compiled output uses stable JSON formatting:
+- 2-space indentation (optimal for diffs)
+- Trailing newline (POSIX compliance)
+- UTF-8 encoding (universal compatibility)
+- Deterministic key ordering (consistent serialization)
 
-This format is optimized for git diffs and LLM token efficiency.
+This format is optimized for:
+- **Git diffs**: Minimal line changes, easy to review
+- **LLM ingestion**: Token-efficient, semantically ordered
+- **Human readability**: Consistent structure, predictable layout

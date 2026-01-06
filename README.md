@@ -1,6 +1,6 @@
 # Semantic JSON
 
-**Obsidian plugin that compiles Canvas files to semantic JSON for enhanced human and AI readability, universal ingestion, and stable version control.**
+**Obsidian plugin that compiles Canvas files to semantic JSON through visuospatial encoding—reading visual field semantics (position, containment, color, directionality) into stable, readable linear order for humans and AI.**
 
 ## What is JSON Canvas?
 
@@ -8,19 +8,30 @@
 
 ## Why This Plugin?
 
-By default, Obsidian "scrambles" `.canvas` file entries on every save. This plugin encodes them into a semantically legible structure without affecting:
-- **Git diffs**: Produces clean, predictable diffs (no noise from reordering)
-- **Hashing**: Deterministic output ensures stable content signatures
-- **Obsidian visibility**: Canvas displays identically—only the underlying JSON changes
+By default, Obsidian "scrambles" `.canvas` file entries on every save—nodes appear in random creation order, losing spatial and structural meaning. This plugin reads the canvas as a **visual language**, encoding four visual dimensions into stable, deterministic JSON:
+
+- **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
+- **Containment** (bounding boxes) → Hierarchical structure (groups + children)
+- **Color** (node/edge colors) → Semantic taxonomy (red=urgent, blue=reference, etc.)
+- **Directionality** (arrow endpoints) → Information flow topology (source → sink)
+
+**Benefits:**
+- **Git diffs**: Clean, predictable diffs—only meaningful changes show up
+- **LLM ingestion**: Semantically ordered for AI comprehension without spatial reconstruction
+- **Human readability**: Logical flow instead of random noise
+- **Canvas rendering**: Displays identically—only the underlying JSON order changes
 
 ## Features
 
-- **Enhanced readability**: Linear JSON output preserves spatial semantics for both human review and AI processing
-- **Auto-compile**: Optionally reorder on save for seamless workflows
-- **Hierarchical ordering**: Groups appear before their contained nodes, depth-first traversal
-- **Topology-based edge sorting**: Edges ordered by spatial information flow (fromNode → toNode position)
-- **Universal ingestion**: Enables intuitive scaffolding of agnostic schema for heterogeneous data sources and prompt structures
+- **Visuospatial encoding**: Reads canvas as a visual language—position, containment, color, and directional flow all encode semantic meaning
+- **Auto-compile on save**: Seamless workflow—canvas files automatically reorder when saved
+- **Hierarchical ordering**: Groups followed immediately by their contents, depth-first traversal
+- **Content-based sorting**: Nodes sort by semantic content (text/file path/URL/label) instead of random IDs
+- **Color taxonomy**: Optional color grouping preserves visual categories (enabled by default)
+- **Flow topology sorting**: Optional directional flow analysis—arrows define execution order, transforming spatial diagrams into sequential narratives (disabled by default)
+- **Topology-based edge sorting**: Edges ordered by connected node positions (or flow depth when flow sorting enabled)
 - **CLI tool**: Included for batch processing or CI pipelines
+- **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
 
 ## Installation
 
@@ -42,12 +53,15 @@ By default, Obsidian "scrambles" `.canvas` file entries on every save. This plug
 
 ### Commands (via Command Palette)
 
-- **"Compile active canvas"**: Reorders the `.canvas` file in-place (no visual changes in ui, no extra files)
-- **"Export canvas to .json"**: Creates a separate `.json` file alongside the `.canvas`
+- **"Compile active canvas"**: Reorders the `.canvas` file in-place (no visual changes in UI, no extra files)
+- **"Export canvas to JSON"**: Creates a separate `.json` file alongside the `.canvas`
 
 ### Settings
 
-- **Auto-compile**: Enable to automatically reorder on every save (in-place, no extra files)
+- **Auto-compile on save** (default: enabled): Automatically reorder canvas files when saved
+- **Color sort nodes** (default: enabled): Group nodes by color within same spatial position
+- **Color sort edges** (default: enabled): Group edges by color within same topology
+- **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
 
 ## Standalone CLI Tool
 See [`cli/canvas-compile.mjs`](./cli/canvas-compile.mjs) for usage details.
@@ -63,20 +77,40 @@ Full technical specification available in [`semantic-json-spec.md`](./semantic-j
 ### Compilation Ordering
 
 **Nodes** are reordered hierarchically based on spatial containment:
-1. Root orphan nodes (not contained by any group) - sorted by y, x, id
-2. Root groups - sorted by y, x, id, immediately followed by their contained nodes
-3. Nested groups appear depth-first after non-group siblings
+1. Root orphan nodes (not contained by groups)
+2. Root groups, immediately followed by their contents (depth-first)
+3. Nested groups follow the same pattern recursively
 
-**Edges** are sorted by spatial topology:
-1. By `fromNode` position (y, then x)
-2. Then by `toNode` position (y, then x)
-3. Fallback to `id` for deterministic ordering
+**Within each scope**, nodes are sorted by (when flow sorting disabled):
+- Spatial position (y, x)
+- Node type priority (link nodes to bottom like footnotes)
+- Color (optional, groups same-colored nodes)
+- Content (text/file path/URL/label instead of random IDs)
 
-This encodes information flow and spatial relationships, making flow diagrams and system architectures immediately legible to LLMs reading the JSON.
+**When flow sorting enabled:**
+- Directional edges create conceptual flow groups
+- Nodes sort by topological order (source → intermediate → sink)
+- Flow depth overrides type priority—link nodes stay in flow order
+- Isolated nodes use standard spatial sorting
+
+**Edges** are sorted by:
+- `fromNode` position (y, x) or flow depth
+- `toNode` position (y, x) or flow depth
+- Color (optional, groups same-colored edges)
+- Edge ID (fallback for determinism)
+
+This transforms spatial diagrams into linear narratives that preserve visual semantics, making flow diagrams, system architectures, and knowledge graphs immediately legible to LLMs without spatial reconstruction.
 
 ## Examples
 
-See [`examples/conformance-test-card.canvas`](./examples/conformance-test-card.canvas) for a test case demonstrating hierarchical ordering.
+See [`examples/conformance-test-card.canvas`](./examples/conformance-test-card.canvas) for a self-documenting test demonstrating:
+- Hierarchical group containment
+- Spatial grid ordering (3×3 table)
+- Nested parent-child groups
+- Color-coded nodes and edges
+- Directional flow patterns (horizontal green edges, vertical cyan edges)
+
+The test card is pre-sorted in the repo, so opening it in Obsidian and saving will scramble it—demonstrating exactly what this plugin fixes.
 
 ## Development
 
@@ -96,4 +130,4 @@ MIT
 
 ---
 
-**Bridges visual authoring with readable semantic structures for humans and machines alike.**
+**Transforms visual canvases into semantic narratives—reading spatial field as language, compiling visual meaning into linear order.**
