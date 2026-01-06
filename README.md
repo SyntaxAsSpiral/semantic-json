@@ -1,6 +1,6 @@
 # Semantic JSON
 
-**Obsidian plugin that recompiles Canvas files to semantic JSON through visuospatial encoding—reading visual field semantics (position, containment, color, directionality) into stable, readable linear order for humans and AI.**
+**Obsidian plugin that recompiles Canvas files to semantic JSON through visuospatial encoding—arranging visual field semantics (position, containment, color, directionality) into stable, readable linear order for humans and AI.**
 
 ## What is JSON Canvas?
 
