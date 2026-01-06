@@ -22,7 +22,7 @@ By default, Obsidian "scrambles" the JSON array in Canvas files on every save, d
 
 ## ⚡ Features
 
-- **Auto-compile on save**: Seamless workflow—canvas files automatically reorder when saved
+- **Auto-compile on save**: Seamless workflow—canvas files never scramble.
 - **Intuitive JSON Editing**: Watch your no-code JSON structures self-assemble in real-time IDE
 - **CLI tool**: Included for batch processing or CI pipelines
 - **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
