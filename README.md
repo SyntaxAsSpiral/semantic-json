@@ -1,6 +1,6 @@
 # ◈ Semantic JSON
 
-![semantic_json](before-after.png)
+![Before/After diff](before-after.png)
 
 ## ⚡Features
 
