@@ -1,5 +1,16 @@
 # ◈ Semantic JSON
 
+## ⚡Features
+
+- **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
+- **Intuitive JSON**: Watch your no-code JSON structures self-assemble in real-time IDE
+- **Pure JSON imports ⇄ exports:** import structure to Canvas, author visually, export clean semantic JSON
+- **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
+- **CLI tool**: Included for batch processing or CI pipelines
+- **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
+
+## 🎯 Why this Plugin?
+
 Obsidian's default handling of the JSON array in Canvas files incidentally discards visually encoded meaning, forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its semantics as stable, deterministic JSON across four dimensions:
 
 - 📍 **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
@@ -11,15 +22,6 @@ Obsidian's default handling of the JSON array in Canvas files incidentally disca
 
 - **JSON Canvas** format becomes a *lingua franca* for the shared visuospatial grammar that people and AI already use natively.
 - **Obsidian Canvas** becomes a full *WYSIWYG* authoring tool for this richly contextual JSON format.
-
-## ⚡Features
-
-- **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
-- **Intuitive JSON**: Watch your no-code JSON structures self-assemble in real-time IDE
-- **Pure JSON imports ⇄ exports:** import structure to Canvas, author visually, export clean semantic JSON
-- **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
-- **CLI tool**: Included for batch processing or CI pipelines
-- **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
 
 ## 📥 Installation
 
