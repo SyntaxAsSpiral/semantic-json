@@ -1,7 +1,7 @@
 {
   "id": "semantic-json",
   "name": "Semantic JSON",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "minAppVersion": "1.5.0",
   "description": "Turns Obsidian Canvas into an intuitive WYSIWYG JSON editor, preserving spatial and visual semantics as stable, machine-legible artifacts.",
   "author": "Zach Battin",
