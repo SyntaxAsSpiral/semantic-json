@@ -1,5 +1,7 @@
 # ◈ Semantic JSON
 
+![semantic_json](Pasted%20image%2020260107021526.png)
+
 ## ⚡Features
 
 - **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling

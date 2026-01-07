@@ -10,6 +10,162 @@ The top level of JSON Canvas contains two arrays:
 - `nodes` (optional, array of nodes)
 - `edges` (optional, array of edges)
 
+## Before & After: The Transformation
+
+**Problem:** Obsidian scrambles Canvas JSON on every save, discarding semantic order and randomizing both node positions in the array and field order within objects.
+
+**Solution:** Semantic JSON compiles spatial layout into deterministic order, preserving visual semantics as stable, machine-legible structure.
+
+### Before (Obsidian's output)
+
+Real-world example: A Cavapoos information canvas saved by Obsidian.
+
+```json
+{
+  "nodes": [
+    {"id":"appearance","type":"text","text":"## Appearance\n\n- Size: Small to medium (9-14 inches tall)\n...","x":100,"y":400,"width":300,"height":200,"color":"#FFD166"},
+    {"id":"temperament","type":"text","text":"## Temperament\n\n- Friendly and affectionate\n...","x":450,"y":400,"width":300,"height":200,"color":"#06D6A0"},
+    {"id":"health","type":"text","text":"## Health Considerations\n\n- Inherited conditions from parent breeds\n...","x":100,"y":650,"width":300,"height":200,"color":"#EF476F"},
+    {"id":"history","type":"text","text":"## History & Origin\n\n- Developed in the 1990s\n...","x":1180,"y":850,"width":300,"height":200,"color":"#540D6E"},
+    {"id":"care","type":"text","text":"## Care Requirements\n\n- Grooming: Regular brushing\n...","x":1030,"y":400,"width":300,"height":350,"color":"#118AB2"},
+    {"id":"adoption","type":"text","text":"## Adoption & Cost\n\nCavapoos typically cost $1,500-$4,000...","x":120,"y":1030,"width":500,"height":150,"color":"#F77F00"},
+    {"id":"training","type":"text","text":"## Training & Exercise\n\n- Highly trainable due to intelligence\n...","x":700,"y":663,"width":300,"height":375,"color":"#073B4C"},
+    {"id":"resources","type":"link","url":"https://www.akc.org/expert-advice/dog-breeds/cavapoo-breed-facts-temperament-traits/","x":120,"y":1340,"width":500,"height":320,"color":"#2196F3"},
+    {"id":"title","type":"text","text":"# Cavapoos\n\nA comprehensive guide to the Cavalier King Charles Spaniel and Poodle mix","x":300,"y":-140,"width":500,"height":180,"color":"#FF6B6B"},
+    {"id":"overview","type":"text","text":"## Overview\n\nCavapoos are a crossbreed between a Cavalier King Charles Spaniel and a Poodle...","x":350,"y":100,"width":500,"height":180,"color":"#4ECDC4"}
+  ]
+}
+```
+
+**Issues:**
+- ❌ **Title appears LAST** (y=-140, but position 9/10 in array!)
+- ❌ Overview buried at the end despite being at top of canvas
+- ❌ Random sections scattered: "appearance" → "temperament" → "health" → "history" → "care" → "adoption" → "training"
+- ❌ Field order is chaotic (`text` before `id`, `color` at the end sometimes, `x` before `y`)
+- ❌ Impossible to read as a document—requires mental reconstruction of spatial layout
+- ❌ Git diffs show massive object repositioning on every save
+- ❌ LLMs receive incoherent structure: "Here's appearance... now temperament... oh wait, here's the title at the end"
+
+### After (Semantic JSON compilation)
+
+```json
+{
+  "nodes": [
+    {
+      "id": "title",
+      "type": "text",
+      "x": 300,
+      "y": -140,
+      "width": 500,
+      "height": 180,
+      "color": "#FF6B6B",
+      "text": "# Cavapoos\n\nA comprehensive guide to the Cavalier King Charles Spaniel and Poodle mix"
+    },
+    {
+      "id": "overview",
+      "type": "text",
+      "x": 350,
+      "y": 100,
+      "width": 500,
+      "height": 180,
+      "color": "#4ECDC4",
+      "text": "## Overview\n\nCavapoos are a crossbreed between a Cavalier King Charles Spaniel and a Poodle..."
+    },
+    {
+      "id": "appearance",
+      "type": "text",
+      "x": 100,
+      "y": 400,
+      "width": 300,
+      "height": 200,
+      "color": "#FFD166",
+      "text": "## Appearance\n\n- Size: Small to medium (9-14 inches tall)\n..."
+    },
+    {
+      "id": "temperament",
+      "type": "text",
+      "x": 450,
+      "y": 400,
+      "width": 300,
+      "height": 200,
+      "color": "#06D6A0",
+      "text": "## Temperament\n\n- Friendly and affectionate\n..."
+    },
+    {
+      "id": "care",
+      "type": "text",
+      "x": 1030,
+      "y": 400,
+      "width": 300,
+      "height": 350,
+      "color": "#118AB2",
+      "text": "## Care Requirements\n\n- Grooming: Regular brushing\n..."
+    },
+    {
+      "id": "training",
+      "type": "text",
+      "x": 700,
+      "y": 663,
+      "width": 300,
+      "height": 375,
+      "color": "#073B4C",
+      "text": "## Training & Exercise\n\n- Highly trainable due to intelligence\n..."
+    },
+    {
+      "id": "health",
+      "type": "text",
+      "x": 100,
+      "y": 650,
+      "width": 300,
+      "height": 200,
+      "color": "#EF476F",
+      "text": "## Health Considerations\n\n- Inherited conditions from parent breeds\n..."
+    },
+    {
+      "id": "history",
+      "type": "text",
+      "x": 1180,
+      "y": 850,
+      "width": 300,
+      "height": 200,
+      "color": "#540D6E",
+      "text": "## History & Origin\n\n- Developed in the 1990s\n..."
+    },
+    {
+      "id": "adoption",
+      "type": "text",
+      "x": 120,
+      "y": 1030,
+      "width": 500,
+      "height": 150,
+      "color": "#F77F00",
+      "text": "## Adoption & Cost\n\nCavapoos typically cost $1,500-$4,000..."
+    },
+    {
+      "id": "resources",
+      "type": "link",
+      "x": 120,
+      "y": 1340,
+      "width": 500,
+      "height": 320,
+      "color": "#2196F3",
+      "url": "https://www.akc.org/expert-advice/dog-breeds/cavapoo-breed-facts-temperament-traits/"
+    }
+  ]
+}
+```
+
+**Benefits:**
+- ✅ **Title first!** Spatial order preserved (y=-140 → y=1340)
+- ✅ Document flows naturally: Title → Overview → Appearance → Temperament → Care → Training → Health → History → Adoption → Resources
+- ✅ Consistent field order: `id` → `type` → `x` → `y` → `width` → `height` → `color` → `text`/`url`
+- ✅ Stable Git diffs—only changed fields show up as modifications
+- ✅ **LLMs read it as a coherent document** without spatial reconstruction
+- ✅ Array position encodes visual reading order (top-to-bottom, left-to-right)
+- ✅ Humans can parse the JSON and understand the canvas structure immediately
+
+**Key insight:** The transformation preserves *all* Canvas data while compiling spatial semantics into linear order. The "scrambled" version and "compiled" version are functionally identical for rendering, but only the compiled version is semantically legible as a document.
+
 ## Nodes
 
 Nodes are objects within the canvas. Nodes may be text, files, links, or groups.
