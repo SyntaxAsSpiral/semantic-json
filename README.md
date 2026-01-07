@@ -1,7 +1,6 @@
 # ◈ Semantic JSON
 
 ![Before/After diff](before-after.png)
-*Move one element 1 pixel → entire file scrambled*
 
 ## ⚡Features
 
