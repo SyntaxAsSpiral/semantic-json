@@ -300,7 +300,7 @@ When **flow sorting is disabled** (default), nodes within each scope are sorted 
    - Can be disabled in plugin settings
 4. **Content**: Sorted alphabetically by semantic content:
    - **Text nodes**: sorted by text content
-   - **File nodes**: sorted by file path
+   - **File nodes**: sorted by filename (basename, not full path)
    - **Link nodes**: sorted by raw URL (preserves protocol)
    - **Group nodes**: sorted by label
    - Falls back to node ID if no content available

@@ -136,9 +136,10 @@ function getNodeSortKey(node) {
     return node.text.toLowerCase().trim();
   }
 
-  // File nodes: sort by file path
+  // File nodes: sort by filename (basename)
   if (type === 'file' && typeof node.file === 'string') {
-    return node.file.toLowerCase().trim();
+    const filename = node.file.split('/').pop() || node.file;
+    return filename.toLowerCase().trim();
   }
 
   // Link nodes: sort by raw URL (keeps protocol, clusters by http/https)
