@@ -91,7 +91,7 @@ Full technical specification available in [`semantic-json-spec.md`](./semantic-j
 - **Flow topology sorting**: Optional directional flow analysis—arrows define execution order, transforming spatial diagrams into sequential narratives (disabled by default)
 - **Topology-based edge sorting**: Edges ordered by connected node positions (or flow depth when flow sorting enabled)
 
-This transforms spatial diagrams into linear narratives that preserve visual semantics, making flow diagrams, system architectures, and knowledge graphs immediately legible to LLMs without spatial reconstruction.
+This transforms spatial diagrams into linear narratives that preserve visual semantics, making flow diagrams, system architectures, and knowledge graphs immediately legible to readers in JSON without spatial reconstruction.
 
 ## 🧪 Examples
 
