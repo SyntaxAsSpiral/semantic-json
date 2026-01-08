@@ -89,7 +89,7 @@ node cli/canvas-compile.mjs --in file.canvas --strip-metadata
 [Full technical specification](./semantic-json-spec.md)
 
 - **Hierarchical ordering**: Groups followed immediately by their contents, depth-first traversal
-- **Content-based sorting**: Nodes sort by semantic content (text/file path/URL/label) instead of random IDs
+- **Content-based sorting**: Nodes sort by semantic content (text/file name/URL/label) instead of random IDs
 - **Color taxonomy**: Optional color grouping preserves visual categories (enabled by default)
 - **Flow topology sorting**: Optional directional flow analysis—arrows define execution order, transforming spatial diagrams into sequential narratives (disabled by default)
 - **Topology-based edge sorting**: Edges ordered by connected node positions (or flow depth when flow sorting enabled)
