@@ -59,7 +59,7 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 - **Color sort edges** (default: enabled): Group edges by color within same topology
 - **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
 
-## 💻 Standalone CLI Tool
+## Standalone CLI Tool
 
 Enables batch processing, CI/CD pipelines, and programmatic canvas compilation.
 

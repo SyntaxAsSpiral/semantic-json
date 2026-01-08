@@ -504,7 +504,7 @@ When **flow sorting is disabled** OR **strip edges when flow-sorted** is disable
 - Flow-sorted exports: Sequential workflows, execution plans, dependency lists (edges stripped by default)
 - Spatial exports: Knowledge graphs, network diagrams, relationship maps (edges preserved by default)
 
-## 📥 Import JSON to Canvas
+### 📥 Import JSON to Canvas
 
 The **"Import JSON to Canvas"** command creates visual scaffolding from pure JSON data structures, generating Canvas nodes with spatial layout.
 
