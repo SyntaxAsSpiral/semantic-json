@@ -51,7 +51,7 @@ edges: Edge[]  # optional: array of edges
 
 Nodes are objects within the canvas. Nodes may be text (including structured text like Markdown or YAML), files, links, or groups.
 
-Nodes are placed in the array in ascending order by **z-index** by default.
+Nodes are placed in the array in ascending order by **z-index** in vanilla.
 
 #### Generic node
 
@@ -325,7 +325,7 @@ The foundation. Surfaces meaning explicitly encoded in Canvas visual syntax:
 - Edge directionality → Flow topology
 - Color values → Semantic taxonomy
 
-#### **Layer 2: Content Identity Extraction** *(future)*
+#### **Layer 2: Content Identity Extraction** *(planned)*
 
 Identity key extraction from structured text node content:
 - **YAML**: `title`, `name`, `id` fields
@@ -347,7 +347,7 @@ All three layers preserve JSON Canvas spec compliance—no data added, removed, 
 ---
 ### Main Process
 
-### 1) 📦+📍  Compiled Node Ordering (Z-INDEX)
+### 1) 📦 +📍  Compiled Node Ordering (ZK-INDEX)
 
 #### 👁️‍🗨️ Node Visual Semantics
 
