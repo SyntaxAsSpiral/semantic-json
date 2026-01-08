@@ -42,8 +42,10 @@ status: living-document
 
 The top level of JSON Canvas contains two arrays:
 
+```
 - `nodes` (optional, array of nodes)
 - `edges` (optional, array of edges)
+```
 
 ### Nodes
 
@@ -55,6 +57,7 @@ Nodes are placed in the array in ascending order by **z-index** by default.
 
 All nodes include the following attributes:
 
+```
 - `id` (required, string) is a unique ID for the node.
 - `type` (required, string) is the node type.
     - `text`
@@ -66,41 +69,51 @@ All nodes include the following attributes:
 - `width` (required, integer) is the width of the node in pixels.
 - `height` (required, integer) is the height of the node in pixels.
 - `color` (optional, `canvasColor`) is the color of the node, see the Color section.
+```
 
 #### Text type nodes
 
 Text type nodes store text. Along with generic node attributes, text nodes include the following attribute:
 
+```
 - `text` (required, string) in plain text with Markdown syntax.
+```
 
 #### File type nodes
 
 File type nodes reference other files or attachments, such as images, videos, etc. Along with generic node attributes, file nodes include the following attributes:
 
+```
 - `file` (required, string) is the path to the file within the system.
 - `subpath` (optional, string) is a subpath that may link to a heading or a block. Always starts with a `#`.
+```
 
 #### Link type nodes
 
 Link type nodes reference a URL. Along with generic node attributes, link nodes include the following attribute:
 
+```
 - `url` (required, string)
+```
 
 #### Group type nodes
 
 Group type nodes are used as a visual container for nodes within it. Along with generic node attributes, group nodes include the following attributes:
 
+```
 - `label` (optional, string) is a text label for the group.
 - `background` (optional, string) is the path to the background image.
 - `backgroundStyle` (optional, string) is the rendering style of the background image. Valid values:
     - `cover` fills the entire width and height of the node.
     - `ratio` maintains the aspect ratio of the background image.
     - `repeat` repeats the image as a pattern in both x/y directions.
+```
 
 ### Edges
 
 Edges are lines that connect one node to another.
 
+```
 - `id` (required, string) is a unique ID for the edge.
 - `fromNode` (required, string) is the node `id` where the connection starts.
 - `fromSide` (optional, string) is the side where this edge starts. Valid values:
@@ -122,17 +135,20 @@ Edges are lines that connect one node to another.
     - `arrow`
 - `color` (optional, `canvasColor`) is the color of the line, see the Color section.
 - `label` (optional, string) is a text label for the edge.
+```
 
 ### Color
 
 The `canvasColor` type is used to encode color data for nodes and edges. Colors attributes expect a string. Colors can be specified in hex format e.g. `"#FF0000"`, or using one of the preset colors, e.g. `"1"` for red. Six preset colors exist, mapped to the following numbers:
 
+```
 - `"1"` red
 - `"2"` orange
 - `"3"` yellow
 - `"4"` green
 - `"5"` cyan
 - `"6"` purple
+```
 
 Specific values for the preset colors are intentionally not defined so that applications can tailor the presets to their specific brand colors or color scheme.
 
@@ -317,7 +333,7 @@ The plugin reads the canvas as a **visual language**, where position, containmen
 
 Semantic JSON operates through three explicit layers, each with clear boundaries and responsibilities:
 
-**Layer 1: Spatial Semantic Compilation** *(implemented)*
+#### **Layer 1: Spatial Semantic Compilation** *(implemented)*
 
 The foundation. Surfaces meaning explicitly encoded in Canvas visual syntax:
 - `x`, `y` coordinates → Linear reading order
@@ -325,7 +341,7 @@ The foundation. Surfaces meaning explicitly encoded in Canvas visual syntax:
 - Edge directionality → Flow topology
 - Color values → Semantic taxonomy
 
-**Layer 2: Content Identity Extraction** *(future)*
+#### **Layer 2: Content Identity Extraction** *(future)*
 
 Identity key extraction from structured text node content:
 - **YAML**: `title`, `name`, `id` fields
@@ -335,7 +351,7 @@ Identity key extraction from structured text node content:
 
 Not parsing. Not interpreting. **Extracting identity keys from existing syntax conventions.**
 
-**Layer 3: Fallback Determinism** *(always active)*
+#### **Layer 3: Fallback Determinism** *(always active)*
 
 Ensures stable, predictable ordering when higher layers don't apply:
 - Plain text: Alphabetical sorting (Unicode collation)
@@ -348,6 +364,7 @@ All three layers preserve JSON Canvas spec compliance—no data added, removed, 
 
 Nodes are reordered **hierarchically** based on spatial containment:
 
+```
 1. **Root orphan nodes** (not contained by any group)
    - Sorted using the rules below (spatial/flow + type + color + content)
 
@@ -356,12 +373,14 @@ Nodes are reordered **hierarchically** based on spatial containment:
    - Immediately followed by their **contained nodes**:
      - Non-group children first (sorted by rules below)
      - Nested group children (sorted by rules below), each followed recursively by their contents
+```
 
 This creates depth-first traversal: each group appears immediately followed by all its contents before the next sibling group.
 
 ####  💫 Sorting Rules
 
 When **flow sorting is disabled** (default), nodes within each scope are sorted by:
+```
 1. **Spatial position**: y (ascending), then x (ascending)
 2. **Node type priority**: Link nodes always sort to bottom (like footnotes), content nodes (text/file/group) sort first
 3. **Color** (optional, enabled by default): Nodes with same color group together (preserves visual semantic categories)
@@ -374,10 +393,24 @@ When **flow sorting is disabled** (default), nodes within each scope are sorted 
    - **Link nodes**: sorted by raw URL (preserves protocol)
    - **Group nodes**: sorted by label
    - Falls back to node ID if no content available
+```
+
+#### 🔗 Flow Sorting
 
 When **flow sorting is enabled** (optional, disabled by default), nodes within each scope are sorted by:
 
+**Edge directionality**:
+```
+1. **Forward arrow** (`fromEnd: none`, `toEnd: arrow`): Standard directional flow (default)
+2. **Reverse arrow** (`fromEnd: arrow`, `toEnd: none`): Reverse flow (dependency)
+3. **Bidirectional** (`fromEnd: arrow`, `toEnd: arrow`): Chain connector that inherits direction from neighbors
+  - `→ ↔ →` becomes `→ → →` (forward chain)
+  - `← ↔ →` becomes `← ← →` (split point)
+4. **Non-directional** (`fromEnd: none`, `toEnd: none`): Ignored for flow analysis
+```
+
 **For nodes in flow groups** (connected by directional edges):
+```
 1. **Flow group position**: Flow groups (connected components) sort by their top-left node (min y, min x)
    - Actual group boundaries contain flow groups (cross-group edges are ignored)
 2. **Flow depth**: Within a flow group, sort **exclusively** by topological order
@@ -388,20 +421,15 @@ When **flow sorting is enabled** (optional, disabled by default), nodes within e
 3. **Spatial position**: Within same flow depth, sort by y (ascending), then x (ascending)
 4. **Color** (optional, enabled by default): Within same flow depth and position, group same-colored nodes
 5. **Content**: Within same depth/position/color, sort alphabetically by semantic content
+```
 
 **For isolated nodes** (not in any flow group):
+```
 1. **Spatial position**: y (ascending), then x (ascending)
 2. **Node type priority**: Link nodes sort to bottom (like footnotes)
 3. **Color** (optional, enabled by default): Groups same-colored nodes together
 4. **Content**: Alphabetical by semantic content
-
-**Edge directionality**:
-- **Forward arrow** (`fromEnd: none`, `toEnd: arrow`): Standard directional flow (default)
-- **Reverse arrow** (`fromEnd: arrow`, `toEnd: none`): Reverse flow (dependency)
-- **Bidirectional** (`fromEnd: arrow`, `toEnd: arrow`): Chain connector that inherits direction from neighbors
-  - `→ ↔ →` becomes `→ → →` (forward chain)
-  - `← ↔ →` becomes `← ← →` (split point)
-- **Non-directional** (`fromEnd: none`, `toEnd: none`): Ignored for flow analysis
+```
 
 #### 👁️ Visual Semantics
 
@@ -427,21 +455,25 @@ When **flow sorting is enabled** (optional, disabled by default), nodes within e
 
 When **flow sorting is disabled** (default), edges are sorted by **spatial topology**:
 
+```
 1. **fromNode position**: Sort by fromNode's y position (ascending), then x position (ascending)
 2. **toNode position**: Sort by toNode's y position (ascending), then x position (ascending)
 3. **Color** (optional, enabled by default): Group edges with same color together
    - Uncolored edges appear first
    - Colored edges sort alphabetically by color value (hex or preset number)
    - Can be disabled in plugin settings
-4. **Edge ID**: Fallback to ID (lexicographic) for deterministic ordering
+1. **Edge ID**: Fallback to ID (lexicographic) for deterministic ordering
+```
 
 When **flow sorting is enabled** (optional, disabled by default), edges inherit their connected nodes' flow order:
 
+```
 1. **fromNode flow depth**: If fromNode is in a flow group, sort by its flow depth (topological order)
 2. **toNode flow depth**: If toNode is in a flow group, sort by its flow depth (topological order)
 3. **Spatial fallback**: For edges between isolated nodes (not in flow groups), use spatial positions (y, x)
 4. **Color** (optional, enabled by default): Group edges with same color together
 5. **Edge ID**: Fallback to ID for deterministic ordering
+```
 
 #### ➡️ Edge Visual Semantics
 
