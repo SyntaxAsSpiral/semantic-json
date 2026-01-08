@@ -26,7 +26,7 @@ Obsidian's default handling of the JSON array in Canvas files incidentally disca
 - **JSON Canvas** format becomes a *lingua franca* for the shared visuospatial grammar that people and AI already use natively.
 - **Obsidian Canvas** becomes a full *WYSIWYG* authoring tool for this richly contextual JSON format.
 
-## 📥 Installation
+## 🌐 Installation
 
 ### Early Access / Beta Installation
 
