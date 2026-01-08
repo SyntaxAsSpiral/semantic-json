@@ -353,7 +353,8 @@ All three layers preserve JSON Canvas spec compliance—no data added, removed, 
 
 **Link node placement**: Link nodes function as references/citations, appearing after primary content (like footnotes) when not in a flow group.
 
-**Color taxonomy**: Color grouping (when enabled) preserves visual semantic categories:
+**Color taxonomy**: Color grouping (when enabled) preserves visual semantic categories such as:
+
 - 🔴 = urgent/error
 - 🟠 = warning
 - 🟡 = in-progress
@@ -489,7 +490,8 @@ end
 
 **Spatial topology**: Edges encode directional information flow. They appear in the order a reader would trace them visually (top-to-bottom, left-to-right).
 
-**Color-coded flows**: Edge colors (when enabled) preserve visual flow semantics:
+**Color-coded flows**: Edge colors (when enabled) preserve visual flow semantics such as:
+
 - 🟢 = success path / horizontal connections
 - 🔴 = error path / critical flow
 - 🔵 = vertical connections / downward flow
