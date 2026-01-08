@@ -1,21 +1,25 @@
-
+---
+title: JSON Canvas Spec — Semantic JSON Extension
+base_spec: JSON Canvas 1.0 (2024-03-11)
+extension: Semantic JSON Compilation
+version: 0.2.0
+author: Zach Battin
+tags:
+  - specification
+  - json-canvas
+  - semantic-json
+  - anticompiler
+status: living-document
+---
 # JSON Canvas Spec — Semantic JSON Extension
 
-Base: JSON Canvas 1.0 (2024-03-11)
-Extension: Semantic JSON Compilation
-
-## 📑 Contents
-
-I. **[[#I. Base Spec|Base Specification]]**
-
-II. **◈ [[#II. ◈ Semantic JSON Extension|Semantic JSON Extension]]**
-
-III. **[[#III. 🎮 Commands & Settings|Commands & Settings]]**
-  - [[#🎛️ Plugin Settings]]
-  - [[#📤 Pure JSON Export]]
-  - [[#📥 Import JSON to Canvas]]
-
-IV. ** [[#IV. 🍥 The Anticompiler]]**
+#### I. [[#I. Base Spec|Base Specification]]
+#### II. [[#II. ◈ Semantic JSON Extension|Semantic JSON Extension]]
+#### III. [[#III. 🎮 Commands & Settings|Commands & Settings]]
+####   - [[#🎛️ Plugin Settings]]
+####   - [[#📤 Pure JSON Export]]
+####   - [[#📥 Import JSON to Canvas]]
+#### IV. [[#IV. 🍥 The Anticompiler|Philosophy]]
 
 ---
 
@@ -34,7 +38,7 @@ IV. ** [[#IV. 🍥 The Anticompiler]]**
 
 [Full Spec](https://jsoncanvas.org/) 
 
-## Top level
+### Top level
 
 The top level of JSON Canvas contains two arrays:
 
