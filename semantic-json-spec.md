@@ -146,7 +146,7 @@ Specific values for the preset colors are intentionally not defined so that appl
 
 **Solution:** Semantic JSON compiles spatial layout into deterministic order, preserving visual semantics as stable, legible structure.
 
-### 😵‍💫 Before (Obsidian's output)
+### 😵‍💫 Before (Vanilla JSON Canvas)
 
 Real-world example: A Cavapoos information canvas saved in Obsidian.
 
@@ -176,7 +176,7 @@ Real-world example: A Cavapoos information canvas saved in Obsidian.
 - ❌ Git diffs show massive object repositioning on every save
 - ❌ LLMs receive incoherent structure: "Here's appearance... now temperament... oh wait, here's the title at the end"
 
-### 🤓 After (Semantic JSON compilation)
+### 🤓 After (Semantic JSON)
 
 ```json
 {
@@ -722,7 +722,7 @@ Semantic JSON:
 - 🔗 **Restores local context** — Related nodes appear adjacent in reading order
 - 📊 **Reduces token entropy** — Predictable structure = better compression *without* reducing meaning
 
-The difference isn't capability—it's **cognitive load**. Raw Canvas asks both humans and models to mentally compile spatial coordinates into reading order. Semantic JSON does that work once, deterministically, preserving the result as structure.
+The difference isn't capability—it's **cognitive load**. Vanilla JSON Canvas asks both humans and models to mentally compile spatial coordinates into reading order. Semantic JSON does that work once, deterministically, preserving the result as structure.
 
 ### 🌀 The Wyrd Framing
 
