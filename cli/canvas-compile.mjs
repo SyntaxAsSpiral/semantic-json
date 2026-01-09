@@ -667,6 +667,9 @@ function flattenHierarchical(nodes, parentMap, settings, allEdges, nodePositions
       const childGroups = children.filter((c) => c?.type === 'group');
       const childNonGroups = children.filter((c) => c?.type !== 'group');
 
+      // Sort subgroups spatially (not semantically)
+      stableSortByXY(childGroups, { ...settings, colorSortNodes: false }, allEdges, nodePositions, false);
+
       // Add non-groups first, then groups (recursively)
       for (const child of childNonGroups) {
         addNodeAndChildren(child);
