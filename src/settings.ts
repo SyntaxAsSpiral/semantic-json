@@ -89,7 +89,7 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Group orphan nodes')
-      .setDesc('Group orphan nodes first before sorting spatially.')
+      .setDesc('Group orphan nodes first before sorting spatially. Orphan nodes are nodes that are not connected to any other nodes by groups or edges, and will be sorted to the top as a single group.')
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.semanticSortOrphans)
