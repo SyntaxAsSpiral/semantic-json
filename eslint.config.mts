@@ -1,32 +1,48 @@
 import tseslint from 'typescript-eslint';
 import obsidianmd from "eslint-plugin-obsidianmd";
 import globals from "globals";
-import { globalIgnores } from "eslint/config";
 
 export default tseslint.config(
 	{
+		files: ["**/*.ts"],
 		languageOptions: {
 			globals: {
 				...globals.browser,
 			},
 			parserOptions: {
-				projectService: {
-					allowDefaultProject: [
-						'eslint.config.js',
-						'manifest.json'
-					]
-				},
+				projectService: true,
 				tsconfigRootDir: import.meta.dirname,
-				extraFileExtensions: ['.json']
 			},
 		},
 	},
-	...obsidianmd.configs.recommended,
-	globalIgnores([
-		"node_modules",
-		"dist",
-		"esbuild.config.mjs",
-		"eslint.config.js",
-		"main.js",
-	]),
+	...tseslint.configs.recommended,
+	{
+		files: ["src/**/*.ts"],
+		plugins: {
+			obsidianmd: obsidianmd,
+		},
+		rules: {
+			// Obsidian-specific rules that help with community plugin review
+			"obsidianmd/commands/no-command-in-command-id": "error",
+			"obsidianmd/commands/no-command-in-command-name": "error", 
+			"obsidianmd/commands/no-plugin-id-in-command-id": "error",
+			"obsidianmd/commands/no-plugin-name-in-command-name": "error",
+			"obsidianmd/no-sample-code": "error",
+			"obsidianmd/validate-manifest": "error",
+			"obsidianmd/no-tfile-tfolder-cast": "error",
+			"obsidianmd/prefer-file-manager-trash-file": "error",
+			"obsidianmd/ui/sentence-case": "warn",
+			// Disable the problematic one that was crashing
+			"obsidianmd/settings-tab/no-problematic-settings-headings": "off",
+		},
+	},
+	{
+		ignores: [
+			"node_modules/**",
+			"dist/**",
+			"esbuild.config.mjs",
+			"eslint.config.js",
+			"main.js",
+		],
+	},
 );

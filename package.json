@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "node esbuild.config.mjs",
     "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-    "lint": "eslint ."
+    "lint": "eslint \"src/**/*.ts\""
   },
   "devDependencies": {
     "@types/node": "^16.11.6",

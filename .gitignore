@@ -4,3 +4,4 @@ main.js
 dist/
 .DS_Store
 agents.md
+.vscode/

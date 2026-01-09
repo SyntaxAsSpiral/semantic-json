@@ -416,7 +416,7 @@ function stableEdgeSortByTopology(
   nodes?: CanvasNode[]
 ): CanvasEdge[] {
   // Build flow groups if flow sorting is enabled
-  let nodeToFlowGroup = new Map<string, FlowGroup>();
+  const nodeToFlowGroup = new Map<string, FlowGroup>();
 
   if (settings?.flowSortNodes && nodes) {
     const flowGroups = buildFlowGroups(nodes, edges, nodePositions);
