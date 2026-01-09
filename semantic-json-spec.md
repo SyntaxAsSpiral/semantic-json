@@ -493,16 +493,16 @@ end
 - Maintains original Canvas spatial layout
 - Mixed positioning: orphans interspersed with groups based on coordinates
 
-**Semantic orphan sorting** (optional, `--semantic-sort-orphans`):
+**🏠 Group orphan nodes** (optional, `--group-orphan-nodes`):
 - All orphan nodes grouped together at the top of the document
 - Within the orphan group, nodes sort semantically (by content) instead of spatially
 - Groups still sort spatially and appear after orphans
 - Creates clear document structure: orphans → groups → nested content
 
 ```crystal
-# Semantic orphan sorting (when enabled)
+# Group orphan nodes (when enabled)
 
-def sort_orphans_semantically(orphan_nodes)
+def group_orphan_nodes(orphan_nodes)
   orphan_nodes.sort_by do |node|
     [
       node.type_priority,   # content nodes before links
@@ -512,14 +512,14 @@ def sort_orphans_semantically(orphan_nodes)
   end
 end
 
-# Document structure with semantic orphan sorting:
+# Document structure with group orphan nodes:
 # 1. All orphan nodes (sorted semantically)
 # 2. All root groups (sorted spatially)
 #    - Group children (sorted semantically within groups)
 ```
 
 **Use cases:**
-- **Semantic orphan sorting**: When orphans represent metadata, references, or standalone concepts that should be grouped together
+- **🏠 Group orphan nodes**: When orphans represent metadata, references, or standalone concepts that should be grouped together
 - **Spatial orphan sorting** (default): When orphans are positioned intentionally and should maintain their spatial relationships with groups
 
 ### 2)  ↘️ Compiled Edge Ordering
@@ -601,7 +601,7 @@ The following sorting options can be configured in plugin settings:
 - **Color sort nodes** (default: enabled): Group nodes by color within same position
 - **Color sort edges** (default: enabled): Group edges by color within same topology
 - **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
-- **Semantic sort orphans** (default: disabled): Group orphan nodes at top and sort semantically instead of spatially
+- **🏠 Group orphan nodes** (default: disabled): Group orphan nodes first before sorting spatially
 - **Strip edges from pure JSON when flow-sorted** (default: enabled): Remove edges from pure JSON exports when flow topology is compiled into node sequence order
 
 ### 📤 Pure JSON Export

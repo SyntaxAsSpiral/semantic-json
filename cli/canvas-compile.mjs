@@ -22,8 +22,8 @@ function usage(message) {
       '  --strip-metadata      Strip Canvas metadata to export pure data structure',
       '  --strip-edges-when-flow-sorted    Strip edges from pure JSON when flow-sorted (default: true)',
       '  --no-strip-edges-when-flow-sorted Preserve edges even when flow-sorted',
-      '  --semantic-sort-orphans           Group orphan nodes at top and sort semantically (default: false)',
-      '  --no-semantic-sort-orphans        Sort orphan nodes spatially (default behavior)',
+      '  --group-orphan-nodes              Group orphan nodes at top and sort semantically (default: false)',
+      '  --no-group-orphan-nodes           Sort orphan nodes spatially (default behavior)',
       '',
       'Behavior:',
       '  - Reads a JSON Canvas 1.0 file (.canvas) or JSON file (.json)',
@@ -50,7 +50,7 @@ function parseArgs(argv) {
     flowSort: false,
     stripMetadata: false,
     stripEdgesWhenFlowSorted: true,
-    semanticSortOrphans: false,
+    groupOrphanNodes: false,
   };
 
   for (let i = 0; i < argv.length; i++) {
@@ -103,12 +103,12 @@ function parseArgs(argv) {
       args.stripEdgesWhenFlowSorted = false;
       continue;
     }
-    if (a === '--semantic-sort-orphans') {
-      args.semanticSortOrphans = true;
+    if (a === '--group-orphan-nodes') {
+      args.groupOrphanNodes = true;
       continue;
     }
-    if (a === '--no-semantic-sort-orphans') {
-      args.semanticSortOrphans = false;
+    if (a === '--no-group-orphan-nodes') {
+      args.groupOrphanNodes = false;
       continue;
     }
     if (a === '--help' || a === '-h') {
@@ -1020,7 +1020,7 @@ async function main() {
     stripMetadata: args.stripMetadata,
     flowSort: args.flowSort,
     stripEdgesWhenFlowSorted: args.stripEdgesWhenFlowSorted,
-    semanticSortOrphans: args.semanticSortOrphans,
+    semanticSortOrphans: args.groupOrphanNodes,
   };
 
   const res = compileCanvasFile({ inPath, outPath: args.out, settings });
