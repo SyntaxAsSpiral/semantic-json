@@ -77,7 +77,7 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Flow sort nodes')
-      .setDesc('Sort nodes by directional flow order. Nodes connected by arrows form conceptual groups that sort by flow topology rather than strict spatial position.')
+      .setDesc('Group nodes by directional flow order. Nodes connected by arrows form conceptual groups that sort by flow topology rather than strict spatial position.')
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.flowSortNodes)
@@ -88,7 +88,7 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName('🏠 Group orphan nodes')
+      .setName('Group orphan nodes')
       .setDesc('Group orphan nodes first before sorting spatially.')
       .addToggle((toggle) =>
         toggle
