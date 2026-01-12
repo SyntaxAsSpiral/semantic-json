@@ -56,9 +56,9 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 
 ### Commands (via Command Palette)
 
-- 💫 **"Compile active canvas"**: Recompiles the `.canvas` file in-place preserving semantic structure
-- 📥 **"Import to canvas"**: Auto-detects JSON/JSONL format and creates enhanced visual scaffolding with hierarchical coloring and rainbow gradients
-- 📤 **"Export as pure JSON"**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)c
+- 💫 **["Compile active canvas"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-compilation)**: Recompiles the `.canvas` file in-place preserving semantic structure
+- 📥 **["Import to canvas"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-unified-import-system)**: Auto-detects JSON/JSONL format and creates enhanced visual scaffolding with hierarchical coloring and rainbow gradients
+- 📤 **["Export as pure JSON"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-pure-json-export)**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
 
 ### Settings
 
