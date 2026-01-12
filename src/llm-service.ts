@@ -37,9 +37,18 @@ export interface SemanticAnalysisRequest {
 }
 
 export interface SemanticAnalysisResponse {
-  taxonomy?: Record<string, string>;  // Optional: type_name -> description
-  node_ids: Record<string, string>;   // original_id -> semantic_id
-  edge_ids?: Record<string, string>;  // original_id -> semantic_id (optional)
+  taxonomy?: Record<string, {
+    description: string;
+    color: string;
+  }>;
+  node_assignments: Record<string, {
+    id: string;
+    color: string;
+  }>;
+  edge_assignments?: Record<string, {
+    id: string;
+    color?: string;
+  }>;
 }
 
 export class LLMService {
@@ -78,7 +87,7 @@ export class LLMService {
       return content;
     }).join('\n');
 
-    return `You are analyzing a Canvas diagram to assign semantic IDs and infer a taxonomy. 
+    return `You are analyzing a Canvas diagram to assign semantic IDs, infer a taxonomy, and assign colors based on types.
 
 CANVAS CONTENT:
 
@@ -89,27 +98,46 @@ EDGES:
 ${edgeDescriptions}
 
 TASK:
-1. Analyze the content and relationships to infer a coherent taxonomy (optional)
+1. Analyze the content and relationships to infer a coherent taxonomy
 2. Assign semantic IDs in the format: type::variant::hash (e.g., "concept::machine-learning::a1b2", "process::data-analysis::c3d4")
-3. Ensure all IDs are unique and follow kebab-case naming
+3. Assign colors to nodes based on their taxonomy type using Canvas color values (1, 2, 3, 4, 5, 6)
+4. Ensure all IDs are unique and follow kebab-case naming
 
 RESPONSE FORMAT (JSON only, no explanation):
 {
   "taxonomy": {
-    "concept": "Core ideas and knowledge",
-    "process": "Actions and workflows",
-    "resource": "Files and references"
+    "concept": {
+      "description": "Core ideas and knowledge",
+      "color": "1"
+    },
+    "process": {
+      "description": "Actions and workflows", 
+      "color": "2"
+    },
+    "resource": {
+      "description": "Files and references",
+      "color": "3"
+    }
   },
-  "node_ids": {
-    "original-id-1": "concept::machine-learning::a1b2",
-    "original-id-2": "process::data-analysis::c3d4"
+  "node_assignments": {
+    "original-id-1": {
+      "id": "concept::machine-learning::a1b2",
+      "color": "1"
+    },
+    "original-id-2": {
+      "id": "process::data-analysis::c3d4", 
+      "color": "2"
+    }
   },
-  "edge_ids": {
-    "edge-id-1": "relation::depends-on::e5f6"
+  "edge_assignments": {
+    "edge-id-1": {
+      "id": "relation::depends-on::e5f6",
+      "color": "4"
+    }
   }
 }
 
-If you cannot infer a meaningful taxonomy, omit the "taxonomy" field and use generic semantic IDs like "node::content-summary::hash".
+Use colors 1-6 consistently for taxonomy types. If you cannot infer a meaningful taxonomy, omit the "taxonomy" field and use generic semantic IDs with default colors.
 
 Respond with valid JSON only:`;
   }
@@ -196,40 +224,74 @@ Respond with valid JSON only:`;
 
       const parsed = JSON.parse(jsonMatch[0]);
       
-      // Validate required fields
-      if (!parsed.node_ids || typeof parsed.node_ids !== 'object') {
-        throw new Error('Invalid node_ids in LLM response');
+      // Handle both new format (node_assignments) and legacy format (node_ids)
+      let nodeAssignments: Record<string, { id: string; color: string }> = {};
+      
+      if (parsed.node_assignments) {
+        nodeAssignments = parsed.node_assignments;
+      } else if (parsed.node_ids) {
+        // Convert legacy format to new format
+        for (const [originalId, semanticId] of Object.entries(parsed.node_ids)) {
+          nodeAssignments[originalId] = {
+            id: semanticId as string,
+            color: '1' // Default color for legacy responses
+          };
+        }
+      } else {
+        throw new Error('Invalid node assignments in LLM response');
       }
 
       // Ensure all original node IDs are mapped
       const originalNodeIds = new Set(request.nodes.map(n => n.id));
-      const mappedNodeIds = new Set(Object.keys(parsed.node_ids));
+      const mappedNodeIds = new Set(Object.keys(nodeAssignments));
       
       for (const originalId of originalNodeIds) {
         if (!mappedNodeIds.has(originalId)) {
-          // Generate fallback ID for missing mappings
-          parsed.node_ids[originalId] = this.generateFallbackId(originalId);
+          // Generate fallback assignment for missing mappings
+          nodeAssignments[originalId] = {
+            id: this.generateFallbackId(originalId),
+            color: '1'
+          };
         }
       }
 
       // Validate semantic ID format and uniqueness
       const semanticIds = new Set<string>();
-      for (const [originalId, semanticId] of Object.entries(parsed.node_ids)) {
-        if (typeof semanticId !== 'string' || !this.isValidSemanticId(semanticId)) {
+      for (const [originalId, assignment] of Object.entries(nodeAssignments)) {
+        if (typeof assignment.id !== 'string' || !this.isValidSemanticId(assignment.id)) {
           // Replace invalid IDs with fallback
-          parsed.node_ids[originalId] = this.generateFallbackId(originalId);
-        } else if (semanticIds.has(semanticId)) {
+          nodeAssignments[originalId] = {
+            id: this.generateFallbackId(originalId),
+            color: assignment.color || '1'
+          };
+        } else if (semanticIds.has(assignment.id)) {
           // Handle duplicate IDs
-          parsed.node_ids[originalId] = this.generateFallbackId(originalId);
+          nodeAssignments[originalId] = {
+            id: this.generateFallbackId(originalId),
+            color: assignment.color || '1'
+          };
         } else {
-          semanticIds.add(semanticId);
+          semanticIds.add(assignment.id);
+        }
+      }
+
+      // Handle edge assignments
+      let edgeAssignments: Record<string, { id: string; color?: string }> = {};
+      if (parsed.edge_assignments) {
+        edgeAssignments = parsed.edge_assignments;
+      } else if (parsed.edge_ids) {
+        // Convert legacy format
+        for (const [originalId, semanticId] of Object.entries(parsed.edge_ids)) {
+          edgeAssignments[originalId] = {
+            id: semanticId as string
+          };
         }
       }
 
       return {
         taxonomy: parsed.taxonomy,
-        node_ids: parsed.node_ids,
-        edge_ids: parsed.edge_ids || {}
+        node_assignments: nodeAssignments,
+        edge_assignments: edgeAssignments
       };
     } catch (error) {
       console.error('Failed to parse LLM response:', error);
@@ -238,23 +300,28 @@ Respond with valid JSON only:`;
   }
 
   private generateFallbackResponse(request: SemanticAnalysisRequest): SemanticAnalysisResponse {
-    const node_ids: Record<string, string> = {};
+    const node_assignments: Record<string, { id: string; color: string }> = {};
     
-    // Generate sequential kebab-case IDs
+    // Generate sequential kebab-case IDs with default colors
     request.nodes.forEach((node, index) => {
       const paddedIndex = (index + 1).toString().padStart(3, '0');
-      node_ids[node.id] = `node-${paddedIndex}`;
+      node_assignments[node.id] = {
+        id: `node-${paddedIndex}`,
+        color: '1' // Default color
+      };
     });
 
-    const edge_ids: Record<string, string> = {};
+    const edge_assignments: Record<string, { id: string; color?: string }> = {};
     request.edges.forEach((edge, index) => {
       const paddedIndex = (index + 1).toString().padStart(3, '0');
-      edge_ids[edge.id] = `edge-${paddedIndex}`;
+      edge_assignments[edge.id] = {
+        id: `edge-${paddedIndex}`
+      };
     });
 
     return {
-      node_ids,
-      edge_ids
+      node_assignments,
+      edge_assignments
     };
   }
 

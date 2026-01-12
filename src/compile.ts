@@ -553,8 +553,8 @@ export function compileCanvasAll({ input, settings }: { input: CanvasData; setti
 
 /**
  * Strip Canvas metadata from compiled structure to produce pure data artifact.
- * Removes spatial (x, y, width, height), visual (color), and rendering metadata.
- * Preserves semantic content: id, text, file, url, label for nodes; id, fromNode, toNode, label for edges.
+ * Removes spatial (x, y, width, height) and rendering metadata.
+ * Preserves semantic content: id, type, text, file, url, label, color for nodes; id, fromNode, toNode, label, color for edges.
  * Optionally strips edges when flow-sorted (topology compiled into sequence order).
  * Embeds labeled edges directly into connected nodes via "via" property.
  */
@@ -601,6 +601,9 @@ export function stripCanvasMetadata(input: CanvasData, settings?: CompileSetting
     if ('url' in node && node.url !== undefined) stripped.url = node.url;
     if ('label' in node && node.label !== undefined) stripped.label = node.label;
     
+    // Preserve color for taxonomy visualization
+    if ('color' in node && node.color !== undefined) stripped.color = node.color;
+    
     // Add directional edges if any labeled edges connect to this node
     const nodeId = normalizedId(node.id);
     if (nodeFromEdges.has(nodeId)) {
@@ -623,6 +626,9 @@ export function stripCanvasMetadata(input: CanvasData, settings?: CompileSetting
       fromNode: edge.fromNode,
       toNode: edge.toNode,
     };
+
+    // Preserve color for taxonomy visualization
+    if ('color' in edge && edge.color !== undefined) stripped.color = edge.color;
 
     return stripped;
   });

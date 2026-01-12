@@ -616,12 +616,13 @@ The **"Export as pure JSON"** command strips Canvas-specific metadata to produce
 
 **Stripped fields:**
 - Spatial metadata: `x`, `y`, `width`, `height`
-- Visual metadata: `color`, `fromSide`, `toSide`, `toEnd`, `fromEnd`
+- Visual metadata: `fromSide`, `toSide`, `toEnd`, `fromEnd`
 - Rendering metadata: `background`, `backgroundStyle`
 
 **Preserved fields:**
 - Node structure: `id`, `type`, `text`, `file`, `url`, `label`
 - Graph topology: `edges` array with `id`, `fromNode`, `toNode`, `label`
+- Taxonomy visualization: `color` for nodes and edges (enables visual parsing of semantic categories)
 - Compiled ordering: Hierarchical and flow-based sequence
 - **Labeled edge relationships**: Embedded directly in nodes via `via` property
 
@@ -956,59 +957,97 @@ The **"Assign Semantic IDs"** command analyzes canvas content using Large Langua
     {
       "id": "concept::machine-learning::fundamentals",
       "type": "text",
-      "text": "Machine Learning Fundamentals"
+      "text": "Machine Learning Fundamentals",
+      "color": "1"
     },
     {
       "id": "process::data-preprocessing::steps",
       "type": "text",
-      "text": "Data preprocessing steps"
+      "text": "Data preprocessing steps",
+      "color": "2"
     }
   ],
   "edges": [
     {
       "id": "relation::depends-on::ml-preprocessing",
       "fromNode": "concept::machine-learning::fundamentals",
-      "toNode": "process::data-preprocessing::steps"
+      "toNode": "process::data-preprocessing::steps",
+      "color": "4"
     }
   ],
   "_taxonomy": {
-    "concept": "Core ideas and theoretical knowledge",
-    "process": "Actions, workflows, and procedures",
-    "relation": "Connections and dependencies"
+    "concept": {
+      "description": "Core ideas and theoretical knowledge",
+      "color": "1"
+    },
+    "process": {
+      "description": "Actions, workflows, and procedures",
+      "color": "2"
+    },
+    "relation": {
+      "description": "Connections and dependencies",
+      "color": "4"
+    }
   }
 }
 ```
 
 ### 🏷️ Taxonomy Inference
 
-The LLM system can optionally generate a **locally-appropriate taxonomy** specific to each canvas content domain.
+The LLM system generates a **locally-appropriate taxonomy** specific to each canvas content domain, with built-in complexity constraints and visual representation.
 
 #### Taxonomy Features
 
 - **Domain-Specific**: Generated based on actual canvas content, not generic categories
+- **Complexity-Constrained**: Limited to 6 types maximum (matching Canvas color palette 1-6)
+- **Visually Represented**: Each taxonomy type gets a distinct color visible in Canvas UI
+- **Human-Parsable**: Colors provide immediate visual understanding since semantic IDs are hidden in JSON
 - **Coherent Classification**: Types form a logical system relevant to the specific use case
-- **Optional Metadata**: Stored as `_taxonomy` field with type descriptions
-- **Flexible Structure**: Supports both simple (`type`) and hierarchical (`type::subtype::variant`) formats
+- **Optional Metadata**: Stored as `_taxonomy` field with type descriptions and color assignments
 
 #### Example Taxonomies
 
 **Software Architecture Canvas:**
 ```json
 "_taxonomy": {
-  "component": "System components and modules",
-  "service": "External services and APIs", 
-  "data": "Data stores and models",
-  "flow": "Information and control flow"
+  "component": {
+    "description": "System components and modules",
+    "color": "1"
+  },
+  "service": {
+    "description": "External services and APIs",
+    "color": "2"
+  },
+  "data": {
+    "description": "Data stores and models", 
+    "color": "3"
+  },
+  "flow": {
+    "description": "Information and control flow",
+    "color": "4"
+  }
 }
 ```
 
 **Research Canvas:**
 ```json
 "_taxonomy": {
-  "hypothesis": "Research hypotheses and questions",
-  "method": "Research methods and approaches",
-  "finding": "Results and discoveries",
-  "source": "References and citations"
+  "hypothesis": {
+    "description": "Research hypotheses and questions",
+    "color": "1"
+  },
+  "method": {
+    "description": "Research methods and approaches",
+    "color": "2"
+  },
+  "finding": {
+    "description": "Results and discoveries",
+    "color": "3"
+  },
+  "source": {
+    "description": "References and citations",
+    "color": "4"
+  }
 }
 ```
 

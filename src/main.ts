@@ -293,7 +293,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
       const serialized = JSON.stringify(updatedCanvas, null, 2) + '\n';
       await this.app.vault.modify(file, serialized);
 
-      const nodeCount = Object.keys(analysisResponse.node_ids).length;
+      const nodeCount = Object.keys(analysisResponse.node_assignments).length;
       const taxonomyInfo = analysisResponse.taxonomy 
         ? ` with ${Object.keys(analysisResponse.taxonomy).length} taxonomy types`
         : ' with generic IDs';
@@ -312,16 +312,20 @@ export default class SemanticJsonModernPlugin extends Plugin {
     
     // Create mapping for validation
     const nodeIdMapping = new Map<string, string>();
-    for (const [originalId, semanticId] of Object.entries(response.node_ids)) {
-      nodeIdMapping.set(originalId as string, semanticId as string);
+    for (const [originalId, assignment] of Object.entries(response.node_assignments)) {
+      nodeIdMapping.set(originalId as string, (assignment as any).id);
     }
 
-    // Update node IDs
+    // Update node IDs and colors
     if (updatedCanvas.nodes && Array.isArray(updatedCanvas.nodes)) {
       updatedCanvas.nodes = updatedCanvas.nodes.map((node: any) => {
-        const newId = response.node_ids[node.id];
-        if (newId) {
-          return { ...node, id: newId };
+        const assignment = response.node_assignments[node.id];
+        if (assignment) {
+          const updatedNode = { ...node, id: assignment.id };
+          if (assignment.color) {
+            updatedNode.color = assignment.color;
+          }
+          return updatedNode;
         }
         return node;
       });
@@ -333,22 +337,26 @@ export default class SemanticJsonModernPlugin extends Plugin {
         const updatedEdge = { ...edge };
         
         // Update edge ID if provided
-        if (response.edge_ids && response.edge_ids[edge.id]) {
-          updatedEdge.id = response.edge_ids[edge.id];
+        if (response.edge_assignments && response.edge_assignments[edge.id]) {
+          const edgeAssignment = response.edge_assignments[edge.id];
+          updatedEdge.id = edgeAssignment.id;
+          if (edgeAssignment.color) {
+            updatedEdge.color = edgeAssignment.color;
+          }
         }
         
         // Update fromNode reference
-        const newFromNode = response.node_ids[edge.fromNode];
-        if (newFromNode) {
-          updatedEdge.fromNode = newFromNode;
+        const assignment = response.node_assignments[edge.fromNode];
+        if (assignment) {
+          updatedEdge.fromNode = assignment.id;
         } else if (!nodeIdMapping.has(edge.fromNode)) {
           console.warn(`Edge ${edge.id} references unknown fromNode: ${edge.fromNode}`);
         }
         
         // Update toNode reference
-        const newToNode = response.node_ids[edge.toNode];
-        if (newToNode) {
-          updatedEdge.toNode = newToNode;
+        const toAssignment = response.node_assignments[edge.toNode];
+        if (toAssignment) {
+          updatedEdge.toNode = toAssignment.id;
         } else if (!nodeIdMapping.has(edge.toNode)) {
           console.warn(`Edge ${edge.id} references unknown toNode: ${edge.toNode}`);
         }
