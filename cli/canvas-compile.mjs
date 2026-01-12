@@ -1312,16 +1312,43 @@ function importDataToCanvasEnhanced(filePath, fileContent) {
       return importJsonlToCanvasEnhanced(jsonObjects);
       
     } else if (extension === 'json') {
-      // JSON: Parse as single object/array
+      // JSON: Parse as single object/array and use grid layout by default
       const data = JSON.parse(fileContent);
       
-      // Check if this is a pure JSON export from Canvas (should be treated like JSONL)
-      if (isPureCanvasExport(data)) {
-        // Extract the nodes array and treat each node as a separate record
-        const nodeRecords = Array.isArray(data.nodes) ? data.nodes : [];
+      // For Canvas exports, extract the nodes array
+      if (typeof data === 'object' && data !== null && Array.isArray(data.nodes)) {
+        const nodeRecords = data.nodes;
         return importJsonlToCanvasEnhanced(nodeRecords);
       }
       
+      // For structured data objects with arrays, flatten to records for grid layout
+      if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
+        const records = [];
+        
+        // Extract all array items as individual records
+        for (const [key, value] of Object.entries(data)) {
+          if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+              records.push({
+                _section: key,
+                _index: index,
+                ...((typeof item === 'object' && item !== null) ? item : { value: item })
+              });
+            });
+          }
+        }
+        
+        if (records.length > 0) {
+          return importJsonlToCanvasEnhanced(records);
+        }
+      }
+      
+      // For top-level arrays, treat each item as a record
+      if (Array.isArray(data)) {
+        return importJsonlToCanvasEnhanced(data);
+      }
+      
+      // Fallback to hierarchical only for simple objects without arrays
       return importJsonToCanvasEnhanced(data);
       
     } else {

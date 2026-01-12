@@ -642,6 +642,14 @@ export function stripCanvasMetadata(input: CanvasData, settings?: CompileSetting
  * Creates visual scaffolding from pure JSON: objects to groups, arrays to groups, primitives to text nodes.
  */
 export function importJsonToCanvas(data: unknown): CanvasData {
+  return importJsonToCanvasEnhanced(data);
+}
+
+/**
+ * Enhanced JSON import with rainbow coloring for top-level items and hierarchical coloring for nested content.
+ * Creates visual scaffolding from pure JSON: objects to groups, arrays to groups, primitives to text nodes.
+ */
+function importJsonToCanvasEnhanced(data: unknown): CanvasData {
   const nodes: CanvasNode[] = [];
   let idCounter = 0;
   const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
@@ -911,10 +919,20 @@ function generateHierarchicalColors(baseColor: string, depth: number): string[] 
 
 /**
  * Import JSONL data to Canvas structure.
+ * Enhanced with rainbow gradient coloring and grid layout.
  * Creates visual scaffolding for multiple JSON objects: each object to group, arranged in a grid.
  * Objects/arrays to groups, primitives to text nodes within each object group.
  */
 export function importJsonlToCanvas(jsonObjects: unknown[]): CanvasData {
+  return importJsonlToCanvasEnhanced(jsonObjects);
+}
+
+/**
+ * Enhanced JSONL import with rainbow gradient coloring and grid layout.
+ * Creates visual scaffolding for multiple JSON objects: each object to group, arranged in a grid.
+ * Objects/arrays to groups, primitives to text nodes within each object group.
+ */
+function importJsonlToCanvasEnhanced(jsonObjects: unknown[]): CanvasData {
   const nodes: CanvasNode[] = [];
   let idCounter = 0;
   const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
@@ -1206,28 +1224,11 @@ function flattenHierarchical(
 
   return result;
 }
-/**
- * Check if JSON data is a pure Canvas export (should be treated like JSONL records)
- */
-function isPureCanvasExport(data: unknown): data is { nodes: unknown[]; edges?: unknown[] } {
-  // Check if it has the Canvas export structure: {nodes: [...], edges: [...]}
-  if (typeof data === 'object' && data !== null && 'nodes' in data) {
-    const canvasData = data as Record<string, unknown>;
-    if (Array.isArray(canvasData.nodes)) {
-      // Check if nodes contain Canvas node properties
-      const firstNode = canvasData.nodes[0];
-      if (firstNode && typeof firstNode === 'object' && firstNode !== null && 
-          'id' in firstNode && 'type' in firstNode) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
+
 
 /**
  * Unified import function that detects input type by file extension and content.
- * Supports .json, .jsonl files with automatic type detection.
+ * Supports .json, .jsonl files with automatic type detection and enhanced visual features.
  */
 export function importDataToCanvas(filePath: string, fileContent: string): CanvasData {
   const extension = filePath.toLowerCase().split('.').pop();
@@ -1248,20 +1249,50 @@ export function importDataToCanvas(filePath: string, fileContent: string): Canva
         throw new Error('No valid JSON objects found in JSONL file');
       }
       
-      return importJsonlToCanvas(jsonObjects);
+      return importJsonlToCanvasEnhanced(jsonObjects);
       
     } else if (extension === 'json') {
-      // JSON: Parse as single object/array
+      // JSON: Parse as single object/array and use grid layout by default
       const data = JSON.parse(fileContent);
       
-      // Check if this is a pure JSON export from Canvas (should be treated like JSONL)
-      if (isPureCanvasExport(data)) {
-        // Extract the nodes array and treat each node as a separate record
-        const nodeRecords = Array.isArray(data.nodes) ? data.nodes : [];
-        return importJsonlToCanvas(nodeRecords);
+      // For Canvas exports, extract the nodes array
+      if (typeof data === 'object' && data !== null && 'nodes' in data) {
+        const canvasData = data as { nodes?: unknown[] };
+        if (Array.isArray(canvasData.nodes)) {
+          return importJsonlToCanvasEnhanced(canvasData.nodes);
+        }
       }
       
-      return importJsonToCanvas(data);
+      // For structured data objects with arrays, flatten to records for grid layout
+      if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
+        const records: unknown[] = [];
+        const obj = data as Record<string, unknown>;
+        
+        // Extract all array items as individual records
+        for (const [key, value] of Object.entries(obj)) {
+          if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+              records.push({
+                _section: key,
+                _index: index,
+                ...((typeof item === 'object' && item !== null) ? item as Record<string, unknown> : { value: item })
+              });
+            });
+          }
+        }
+        
+        if (records.length > 0) {
+          return importJsonlToCanvasEnhanced(records);
+        }
+      }
+      
+      // For top-level arrays, treat each item as a record
+      if (Array.isArray(data)) {
+        return importJsonlToCanvasEnhanced(data);
+      }
+      
+      // Fallback to hierarchical only for simple objects without arrays
+      return importJsonToCanvasEnhanced(data);
       
     } else {
       // Auto-detect based on content structure
@@ -1273,7 +1304,7 @@ export function importDataToCanvas(filePath: string, fileContent: string): Canva
         // Try parsing as JSONL first
         try {
           const jsonObjects = lines.map(line => JSON.parse(line));
-          return importJsonlToCanvas(jsonObjects);
+          return importJsonlToCanvasEnhanced(jsonObjects);
         } catch {
           // Fall through to JSON parsing
         }
@@ -1282,7 +1313,7 @@ export function importDataToCanvas(filePath: string, fileContent: string): Canva
       // Try parsing as regular JSON
       try {
         const data = JSON.parse(trimmedContent);
-        return importJsonToCanvas(data);
+        return importJsonToCanvasEnhanced(data);
       } catch (error) {
         throw new Error(`Unable to parse file as JSON or JSONL: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
