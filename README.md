@@ -4,9 +4,9 @@
 
 ## ⚡Features
 
-- **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
 - **Intuitive JSON**: Watch your clean data structure self-assemble in real-time IDE
 - **Enhanced imports ⇄ exports:** unified import with auto-detection, beautiful canvas imports, and clean pure JSON exports
+- **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
 - **Automatic grid arrangement**: Data arranged in monitor-friendly aspect ratios (16:9)
 - **Intelligent file detection**: Works with `.json`, `.jsonl`, or auto-detects based on content structure
 - **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
