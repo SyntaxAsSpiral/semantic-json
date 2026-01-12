@@ -705,27 +705,45 @@ When **flow sorting is disabled** AND **strip edges when flow-sorted** is disabl
 - **Flow-sorted exports**: Sequential workflows, execution plans, dependency lists (edges stripped by default)
 - **Spatial exports**: Network diagrams, relationship maps (edges preserved by default)
 
-### 📥 Import JSON to Canvas
+### 📥 Unified Import System
 
-The **"Import JSON to Canvas"** command creates visual scaffolding from pure JSON data structures, generating Canvas nodes with spatial layout.
+The **unified import system** provides enhanced JSON/JSONL import capabilities with automatic file type detection and advanced visual features.
 
-**Input:** Pure JSON (objects, arrays, primitives)
-**Output:** Valid `.canvas` file with visual representation
+#### 🎯 Unified Import Command
 
-### 📥 Import JSONL to Canvas
+**CLI:** `--import <file>` (auto-detects JSON/JSONL format)
+**Plugin:** "Import JSON to Canvas" and "Import JSONL to Canvas" commands
 
-The **"Import JSONL to Canvas"** command creates visual scaffolding from JSONL (JSON Lines) data, where each line contains a separate JSON object. Each object becomes a separate record group in the canvas.
+**Input:** JSON files (.json), JSONL files (.jsonl), or auto-detected based on content
+**Output:** Valid `.canvas` file with enhanced visual representation
 
-**Input:** JSONL file (multiple JSON objects, one per line)
-**Output:** Valid `.canvas` file with visual representation of all records
+#### 🌈 Enhanced Visual Features
 
-**Transformation rules:**
+**Rainbow Gradient Coloring (JSONL)**:
+- Each JSONL record gets a unique color from a rainbow gradient
+- Colors cycle through: Red → Orange → Yellow → Green → Cyan → Blue → Purple
+- Multiple cycles add hue variations for visual distinction
+- Optimal for datasets with many records
+
+**Hierarchical Color Mutations (JSON)**:
+- Nested structures use depth-based color variations
+- Each nesting level gets progressively more muted colors
+- Hue shifts by 25° per level for clear visual hierarchy
+- Saturation reduces and lightness increases with depth
+
+**Automatic Grid Layout (JSONL)**:
+- Records arranged in monitor-friendly aspect ratios (16:9 to 16:10)
+- Grid dimensions calculated automatically based on record count
+- Optimal spacing prevents visual clutter
+- Collision avoidance ensures readable layouts
+
+#### 📋 Transformation Rules
 
 **Objects** → Group nodes
-- Keys become child text nodes
-- Object label = extracted identity key (if Layer 2 enabled) or `{...}` (fallback)
-- Nested objects = nested groups
-- Spatial layout: horizontal or vertical based on depth
+- Keys become child text nodes with hierarchical coloring
+- Object label = key name or "Root Object" for top-level
+- Nested objects = nested groups with color mutations
+- Dynamic width based on nesting depth
 
 **Arrays** → Group nodes
 - Elements become child nodes (groups for objects, text for primitives)

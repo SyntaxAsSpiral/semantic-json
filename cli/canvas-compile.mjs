@@ -1000,8 +1000,8 @@ function importJsonlToCanvas(jsonObjects) {
 
 /**
  * Import JSON data to Canvas structure.
- * Creates visual scaffolding: objects/arrays → groups, primitives → text nodes.
- * Simple vertical layout, zero edges (no implied causality).
+ * Creates enhanced visual scaffolding: objects/arrays → groups, primitives → text nodes.
+ * Enhanced with hierarchical coloring and improved layout, zero edges (no implied causality).
  */
 function importJsonToCanvas(data) {
   const nodes = [];

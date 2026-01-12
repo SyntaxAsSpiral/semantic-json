@@ -7,10 +7,18 @@
 
 - **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
 - **Intuitive JSON**: Watch your clean data structure self-assemble in real-time IDE
-- **Pure JSON/JSONL imports ⇄ exports:** import structure to Canvas, author visually, export clean semantic JSON
+- **Enhanced JSON/JSONL imports ⇄ exports:** unified import with auto-detection, hierarchical coloring, and rainbow gradients
 - **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
-- **CLI tool**: Included for batch processing or CI pipelines
+- **CLI tool**: Included for batch processing or CI pipelines with unified `--import` command
 - **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
+
+### 🌈 Enhanced Import Features
+
+- **Unified `--import` command**: Auto-detects JSON/JSONL format and creates optimized Canvas layouts
+- **Rainbow gradient coloring**: JSONL records get beautiful gradient colors for visual separation
+- **Hierarchical color mutations**: Nested structures use depth-based color variations for clear hierarchy
+- **Automatic grid arrangement**: JSONL data arranged in monitor-friendly aspect ratios (16:9)
+- **Intelligent file detection**: Works with `.json`, `.jsonl`, or auto-detects based on content structure
 
 ## 🎯 Why this Plugin?
 
@@ -49,8 +57,8 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 ### Commands (via Command Palette)
 
 - 💫 **"Compile active canvas"**: Recompiles the `.canvas` file in-place preserving semantic structure
-- 📥 **"Import JSON to Canvas"**: Creates visual scaffolding from JSON (objects/arrays → groups, primitives → text nodes)
-- 📥 **"Import JSONL to Canvas"**: Creates visual scaffolding from JSONL files (each line becomes a record group)
+- 📥 **"Import JSON to Canvas"**: Creates enhanced visual scaffolding from JSON with hierarchical coloring (objects/arrays → groups, primitives → text nodes)
+- 📥 **"Import JSONL to Canvas"**: Creates visual scaffolding from JSONL files with rainbow gradient coloring (each line becomes a record group)
 - 📤 **"Export as pure JSON"**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
 
 ### Settings
@@ -66,10 +74,12 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 Enables batch processing, CI/CD pipelines, and programmatic canvas compilation.
 
 ```bash
-# Import JSON to Canvas (create visual scaffolding)
-node cli/canvas-compile.mjs --from-json data.json
+# Unified import with auto-detection (recommended)
+node cli/canvas-compile.mjs --import data.json
+node cli/canvas-compile.mjs --import data.jsonl
 
-# Import JSONL to Canvas (each line becomes a record group)
+# Legacy import commands (still supported)
+node cli/canvas-compile.mjs --from-json data.json
 node cli/canvas-compile.mjs --from-jsonl data.jsonl
 
 # Compile to semantic JSON Canvas
@@ -79,8 +89,9 @@ node cli/canvas-compile.mjs --in <path-to-.canvas>
 node cli/canvas-compile.mjs --in file.canvas --strip-metadata
 
 # Options
---from-json                       # Import JSON to Canvas
---from-jsonl                      # Import JSONL to Canvas
+--import                          # Auto-detect and import JSON/JSONL to Canvas (unified command)
+--from-json                       # Import JSON to Canvas (legacy)
+--from-jsonl                      # Import JSONL to Canvas (legacy)
 --color-nodes / --no-color-nodes  # Color sorting (default: true)
 --color-edges / --no-color-edges  # Edge color sorting (default: true)
 --flow-sort / --no-flow-sort      # Flow topology sorting (default: false)
