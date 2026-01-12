@@ -1,6 +1,6 @@
 {
-  "name": "semantic-json-modern",
-  "version": "0.1.0",
+  "name": "semantic-json",
+  "version": "0.3.0",
   "description": "Normalize Canvas JSON with flow sort, hierarchical grouping, and deterministic ordering",
   "author": "Zach Battin",
   "license": "MIT",
