@@ -7,7 +7,7 @@
 
 - **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
 - **Intuitive JSON**: Watch your clean data structure self-assemble in real-time IDE
-- **Enhanced JSON/JSONL imports ⇄ exports:** unified import with auto-detection, hierarchical coloring, and rainbow gradients
+- **Enhanced JSON/JSONL imports ⇄ exports:** unified import with auto-detection, beautiful canvas imports, and clean pure json exports
 - **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
 - **CLI tool**: Included for batch processing or CI pipelines with unified `--import` command
 - **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
