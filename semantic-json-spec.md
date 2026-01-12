@@ -712,7 +712,7 @@ The **unified import system** provides enhanced JSON/JSONL import capabilities w
 #### 🎯 Unified Import Command
 
 **CLI:** `--import <file>` (auto-detects JSON/JSONL format)
-**Plugin:** "Import JSON to Canvas" and "Import JSONL to Canvas" commands
+**Plugin:** "Import to canvas" command (unified) + individual "Import JSON to canvas" and "Import JSONL to canvas" commands
 
 **Input:** JSON files (.json), JSONL files (.jsonl), or auto-detected based on content
 **Output:** Valid `.canvas` file with enhanced visual representation

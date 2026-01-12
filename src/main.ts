@@ -1,5 +1,5 @@
 import { Notice, Plugin, TFile } from 'obsidian';
-import { compileCanvasAll, stripCanvasMetadata, importJsonToCanvas, importJsonlToCanvas } from './compile';
+import { compileCanvasAll, stripCanvasMetadata, importJsonToCanvas, importJsonlToCanvas, importDataToCanvas } from './compile';
 import {
   DEFAULT_SETTINGS,
   SemanticJsonModernSettingTab,
@@ -24,6 +24,12 @@ export default class SemanticJsonModernPlugin extends Plugin {
       id: 'export-as-pure-json',
       name: 'Export as pure JSON',
       callback: () => void this.exportAsPureJson(),
+    });
+
+    this.addCommand({
+      id: 'import-to-canvas',
+      name: 'Import to canvas',
+      callback: () => void this.importToCanvas(),
     });
 
     this.addCommand({
@@ -110,6 +116,40 @@ export default class SemanticJsonModernPlugin extends Plugin {
       console.error(error);
       new Notice(
         `Export failed${error instanceof Error ? `: ${error.message}` : ''}`
+      );
+    }
+  }
+
+  async importToCanvas() {
+    const file = this.app.workspace.getActiveFile();
+    if (!file || (file.extension !== 'json' && file.extension !== 'jsonl')) {
+      new Notice('No active JSON or JSONL file');
+      return;
+    }
+
+    try {
+      const raw = await this.app.vault.read(file);
+      
+      // Use unified import with auto-detection
+      const canvas = importDataToCanvas(file.path, raw);
+      const serialized = JSON.stringify(canvas, null, 2) + '\n';
+
+      // Create .canvas filename
+      const canvasPath = file.path.replace(/\.(json|jsonl)$/, '.canvas');
+
+      // Check if file exists
+      const existingFile = this.app.vault.getAbstractFileByPath(canvasPath);
+      if (existingFile instanceof TFile) {
+        await this.app.vault.modify(existingFile, serialized);
+      } else {
+        await this.app.vault.create(canvasPath, serialized);
+      }
+
+      new Notice(`Imported to ${canvasPath}`);
+    } catch (error) {
+      console.error(error);
+      new Notice(
+        `Import failed${error instanceof Error ? `: ${error.message}` : ''}`
       );
     }
   }

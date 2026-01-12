@@ -57,9 +57,12 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 ### Commands (via Command Palette)
 
 - 💫 **"Compile active canvas"**: Recompiles the `.canvas` file in-place preserving semantic structure
-- 📥 **"Import JSON to Canvas"**: Creates enhanced visual scaffolding from JSON with hierarchical coloring (objects/arrays → groups, primitives → text nodes)
-- 📥 **"Import JSONL to Canvas"**: Creates visual scaffolding from JSONL files with rainbow gradient coloring (each line becomes a record group)
+- 📥 **"Import to canvas"**: **Unified import** with auto-detection - works with both JSON and JSONL files, applies enhanced coloring automatically
+- 📥 **"Import JSON to canvas"**: Creates enhanced visual scaffolding from JSON with hierarchical coloring (objects/arrays → groups, primitives → text nodes)
+- 📥 **"Import JSONL to canvas"**: Creates visual scaffolding from JSONL files with rainbow gradient coloring (each line becomes a record group)
 - 📤 **"Export as pure JSON"**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
+
+**Recommended**: Use "Import to canvas" for the best experience - it automatically detects your file type and applies the optimal visual styling.
 
 ### Settings
 
