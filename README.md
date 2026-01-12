@@ -8,6 +8,7 @@
 - **Enhanced imports ⇄ exports:** unified import with auto-detection, beautiful canvas imports, and clean pure JSON exports
 - **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
 - **Automatic grid arrangement**: Imports arranged in monitor-friendly aspect ratios (16:9)
+- **Flexible AI Integration**: Optional LLM-based color-coded semantic ID assignment with support for local and cloud providers
 - **Intelligent file detection**: Works with `.canvas`, `.json`, `.jsonl`, or auto-detects based on content structure
 - **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
 - **CLI tool**: Included for batch processing or CI pipelines with unified `--import` command
