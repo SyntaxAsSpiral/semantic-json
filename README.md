@@ -15,7 +15,7 @@
 ### 🌈 Enhanced Import Features
 
 - **Unified `--import` command**: Auto-detects JSON/JSONL format and creates optimized Canvas layouts
-- **Rainbow gradient coloring**: Records get beautiful gradient colors for visual separation
+- **Rainbow gradient coloring**: Records get beautiful gradient colors for visual separation ([see example](examples/large-jsonl-import.png))
 - **Hierarchical color mutations**: Nested structures use depth-based color variations for clear hierarchy
 - **Automatic grid arrangement**: Data arranged in monitor-friendly aspect ratios (16:9)
 - **Intelligent file detection**: Works with `.json`, `.jsonl`, or auto-detects based on content structure

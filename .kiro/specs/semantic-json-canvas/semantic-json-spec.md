@@ -2,7 +2,7 @@
 title: JSON Canvas Spec — Semantic JSON Extension
 base_spec: JSON Canvas 1.0 (2024-03-11)
 extension: Semantic JSON Compilation
-version: 0.2.0
+version: 0.3.0
 author: Zach Battin
 tags:
   - specification
