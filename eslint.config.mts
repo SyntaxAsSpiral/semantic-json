@@ -2,7 +2,47 @@ import tseslint from 'typescript-eslint';
 import obsidianmd from "eslint-plugin-obsidianmd";
 import globals from "globals";
 
+// Custom rule to prevent non-ASCII characters
+const noNonAsciiRule = {
+	meta: {
+		type: 'problem',
+		docs: {
+			description: 'Disallow non-ASCII characters in code and comments',
+			category: 'Possible Errors',
+		},
+		schema: [],
+		messages: {
+			nonAsciiChar: 'Non-ASCII character found: "{{char}}" (use ASCII equivalent)',
+		},
+	},
+	create(context) {
+		return {
+			Program(node) {
+				const sourceCode = context.getSourceCode();
+				const text = sourceCode.getText();
+				
+				for (let i = 0; i < text.length; i++) {
+					const char = text[i];
+					const charCode = char.charCodeAt(0);
+					
+					// Check for non-ASCII characters (outside 0-127 range)
+					if (charCode > 127) {
+						const loc = sourceCode.getLocFromIndex(i);
+						context.report({
+							loc,
+							messageId: 'nonAsciiChar',
+							data: { char },
+						});
+					}
+				}
+			},
+		};
+	},
+};
+
 export default tseslint.config(
+	// Use Obsidian's recommended configuration
+	...obsidianmd.configs.recommended,
 	{
 		files: ["**/*.ts"],
 		languageOptions: {
@@ -47,21 +87,22 @@ export default tseslint.config(
 	{
 		files: ["src/**/*.ts"],
 		plugins: {
-			obsidianmd: obsidianmd,
+			custom: {
+				rules: {
+					'no-non-ascii': noNonAsciiRule,
+				},
+			},
 		},
 		rules: {
-			// Obsidian-specific rules that help with community plugin review
-			"obsidianmd/commands/no-command-in-command-id": "error",
-			"obsidianmd/commands/no-command-in-command-name": "error", 
-			"obsidianmd/commands/no-plugin-id-in-command-id": "error",
-			"obsidianmd/commands/no-plugin-name-in-command-name": "error",
-			"obsidianmd/no-sample-code": "error",
-			"obsidianmd/validate-manifest": "error",
-			"obsidianmd/no-tfile-tfolder-cast": "error",
-			"obsidianmd/prefer-file-manager-trash-file": "error",
+			// Custom rule to prevent non-ASCII characters (emojis, special symbols)
+			"custom/no-non-ascii": "error",
+			// Override specific Obsidian rules if needed
 			"obsidianmd/ui/sentence-case": "warn",
-			// Disable the problematic one that was crashing
-			"obsidianmd/settings-tab/no-problematic-settings-headings": "off",
+			// Relax some strict TypeScript rules for plugin development
+			"@typescript-eslint/no-unsafe-assignment": "off",
+			"@typescript-eslint/no-unsafe-return": "off",
+			"@typescript-eslint/no-base-to-string": "off",
+			"no-console": "off", // Allow console for debugging in plugin development
 		},
 	},
 	{

@@ -102,7 +102,7 @@ node cli/canvas-compile.mjs --in file.canvas --strip-metadata
 [JSON Canvas](https://jsoncanvas.org/) is an open file format for infinite canvas data, originally developed for Obsidian Canvas. It promotes longevity, readability, interoperability, and extensibility using the `.canvas` extension and a simple JSON structure with nodes and edges. Infinite canvas tools organize information **spatially** like a digital whiteboard.
 
 ### Compilation Process
-[Full documentation](./semantic-json-spec.md)
+[Full documentation](./.kiro/specs/semantic-json-canvas/)
 
 - **Hierarchical ordering**: Groups followed immediately by their contents, depth-first traversal
 - **Content-based sorting**: Nodes sort by semantic content (text/file name/URL/label) instead of random IDs

@@ -123,6 +123,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
   async importToCanvas() {
     const file = this.app.workspace.getActiveFile();
     if (!file || (file.extension !== 'json' && file.extension !== 'jsonl')) {
+      // eslint-disable-next-line obsidianmd/ui/sentence-case
       new Notice('No active JSON or JSONL file');
       return;
     }

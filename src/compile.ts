@@ -632,7 +632,7 @@ export function stripCanvasMetadata(input: CanvasData, settings?: CompileSetting
 
 /**
  * Import JSON data to Canvas structure.
- * Creates visual scaffolding from pure JSON: objects → groups, arrays → groups, primitives → text nodes.
+ * Creates visual scaffolding from pure JSON: objects to groups, arrays to groups, primitives to text nodes.
  * Enhanced with hierarchical coloring system and improved layout.
  */
 export function importJsonToCanvas(data: unknown): CanvasData {
@@ -667,7 +667,7 @@ export function importJsonToCanvas(data: unknown): CanvasData {
       });
       context.y += 80;
     } else if (typeof value === 'object' && !Array.isArray(value)) {
-      // Object → Group
+      // Object to Group
       const groupId = generateId();
       const groupStartY = context.y;
       const label = key !== null ? String(key) : 'Root Object';
@@ -692,7 +692,7 @@ export function importJsonToCanvas(data: unknown): CanvasData {
       
       context.y += 20; // Space after group
     } else if (Array.isArray(value)) {
-      // Array → Group
+      // Array to Group
       const groupId = generateId();
       const groupStartY = context.y;
       const label = key !== null ? `${String(key)} [${value.length}]` : `Array [${value.length}]`;
@@ -716,7 +716,7 @@ export function importJsonToCanvas(data: unknown): CanvasData {
       
       context.y += 20; // Space after group
     } else {
-      // Primitive → Text node
+      // Primitive to Text node
       const valueStr = typeof value === 'string' ? `"${value}"` : String(value);
       const displayText = key !== null ? `**${String(key)}**: ${valueStr}` : valueStr;
       
@@ -829,7 +829,7 @@ function generateRainbowGradient(count: number): string[] {
     const cyclePosition = Math.floor(i / baseHues.length);
     
     // Add slight variation for multiple cycles
-    const hueVariation = cyclePosition * 15; // 15° shift per cycle
+    const hueVariation = cyclePosition * 15; // 15 degree shift per cycle
     const baseHue = baseHues[hueIndex];
     const finalHue = (baseHue + hueVariation) % 360;
     
@@ -851,7 +851,7 @@ function generateHierarchicalColors(baseColor: string, depth: number): string[] 
   
   for (let i = 1; i <= depth; i++) {
     // Each level gets progressively more muted and shifted
-    const hueShift = i * 25; // Shift hue by 25° per level
+    const hueShift = i * 25; // Shift hue by 25 degrees per level
     const satReduction = 0.85 - (i * 0.1); // Reduce saturation
     const lightIncrease = 1.1 + (i * 0.05); // Increase lightness slightly
     
@@ -864,8 +864,8 @@ function generateHierarchicalColors(baseColor: string, depth: number): string[] 
 
 /**
  * Import JSONL data to Canvas structure.
- * Creates visual scaffolding for multiple JSON objects: each object → group, arranged in a grid.
- * Objects/arrays → groups, primitives → text nodes within each object group.
+ * Creates visual scaffolding for multiple JSON objects: each object to group, arranged in a grid.
+ * Objects/arrays to groups, primitives to text nodes within each object group.
  */
 export function importJsonlToCanvas(jsonObjects: unknown[]): CanvasData {
   const nodes: CanvasNode[] = [];
@@ -936,7 +936,7 @@ export function importJsonlToCanvas(jsonObjects: unknown[]): CanvasData {
         });
         context.y += 80;
       } else if (typeof value === 'object' && !Array.isArray(value)) {
-        // Object → Group
+        // Object to Group
         const groupId = generateId();
         const groupStartY = context.y;
         context.y += 40; // Space for group header
@@ -960,7 +960,7 @@ export function importJsonlToCanvas(jsonObjects: unknown[]): CanvasData {
         
         context.y += 20; // Space after group
       } else if (Array.isArray(value)) {
-        // Array → Group
+        // Array to Group
         const groupId = generateId();
         const groupStartY = context.y;
         context.y += 40; // Space for group header
@@ -983,7 +983,7 @@ export function importJsonlToCanvas(jsonObjects: unknown[]): CanvasData {
         
         context.y += 20; // Space after group
       } else {
-        // Primitive → Text node
+        // Primitive to Text node
         const displayValue = typeof value === 'string' ? `"${value}"` : String(value);
         nodes.push({
           id: generateId(),
