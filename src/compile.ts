@@ -930,157 +930,376 @@ export function importJsonlToCanvas(jsonObjects: unknown[]): CanvasData {
 /**
  * Enhanced JSONL import with rainbow gradient coloring and grid layout.
  * Creates visual scaffolding for multiple JSON objects: each object to group, arranged in a grid.
- * Objects/arrays to groups, primitives to text nodes within each object group.
+ * Uses proper node-first placement with groups calculated from actual node positions.
  */
 function importJsonlToCanvasEnhanced(jsonObjects: unknown[]): CanvasData {
-  const nodes: CanvasNode[] = [];
+  const groupNodes: CanvasNode[] = []; // Groups go first (bottom layer)
+  const contentNodes: CanvasNode[] = []; // Content goes on top
   let idCounter = 0;
   const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
 
-  interface LayoutContext {
-    x: number;
-    y: number;
-  }
-
   // Grid layout configuration
-  const recordWidth = 700;  // Width of each record group (including padding)
-  const recordSpacing = 50; // Spacing between records
+  const recordWidth = 420;  // Width for each record column
+  const recordSpacing = 30; // Spacing between records
   const totalRecordWidth = recordWidth + recordSpacing;
+  const columnWidth = 180; // Width of each text column within a group
+  const columnSpacing = 20; // Space between columns
+  const groupPadding = 20; // Breathing room inside groups
+  const nodeHeight = 60; // Standard node height
+  const nodeSpacing = 10; // Spacing between nodes
+  const sectionSpacing = 50; // Extra spacing between logical sections
+  const groupSpacing = 25; // Extra spacing after each group
   
-  // Calculate grid dimensions for monitor-friendly aspect ratio (16:9 to 16:10)
-  const targetAspectRatio = 16 / 9; // Start with 16:9, can adjust
+  // Calculate grid dimensions - max 4 columns for optimal document scanning
+  const maxCols = 4;
   const recordCount = jsonObjects.length;
   
-  // Calculate optimal grid dimensions
-  let cols = Math.ceil(Math.sqrt(recordCount * targetAspectRatio));
+  let cols = Math.min(recordCount, maxCols);
   let rows = Math.ceil(recordCount / cols);
-  
-  // Adjust to ensure we don't have too many empty spots
-  while (cols * rows - recordCount > cols && cols > 1) {
-    cols--;
-    rows = Math.ceil(recordCount / cols);
-  }
+
+  // eslint-disable-next-line no-console
+  console.log(`Arranging ${recordCount} records in ${cols}x${rows} grid (max ${maxCols} columns for document scanning)`);
 
   // Generate rainbow gradient colors for main records
   const rainbowColors = generateRainbowGradient(recordCount);
 
-  // Layout each JSON object in grid position
+  // Track row heights for proper grid spacing
+  const rowHeights: number[] = [];
+  const recordHeights: number[] = [];
+
+  // First pass: calculate all record heights
   for (let i = 0; i < jsonObjects.length; i++) {
     const obj = jsonObjects[i];
-    const objectGroupId = generateId();
-    const baseColor = rainbowColors[i];
+    let recordHeight = 100; // Minimum height
     
-    // Generate hierarchical colors for this record's nested content
-    const hierarchicalColors = generateHierarchicalColors(baseColor, 5);
+    if (typeof obj === 'object' && obj !== null && '_section' in obj && '_index' in obj) {
+      const record = obj as Record<string, unknown>;
+      const dataEntries = Object.entries(record).filter(([key]) => !key.startsWith('_'));
+      
+      // Estimate height based on content
+      let estimatedNodes = 0;
+      for (const [, value] of dataEntries) {
+        if (typeof value === 'object' && value !== null) {
+          if (Array.isArray(value)) {
+            estimatedNodes += value.length;
+          } else {
+            const subEntries = Object.entries(value as Record<string, unknown>);
+            for (const [, subValue] of subEntries) {
+              if (Array.isArray(subValue)) {
+                estimatedNodes += subValue.length;
+              } else {
+                estimatedNodes += 1;
+              }
+            }
+          }
+        } else {
+          estimatedNodes += 1;
+        }
+      }
+      
+      // Calculate height: base + nodes in 2-column layout + spacing
+      const nodeRows = Math.ceil(estimatedNodes / 2);
+      recordHeight = 50 + (nodeRows * (nodeHeight + nodeSpacing)) + (dataEntries.length * sectionSpacing) + 100;
+    }
+    
+    recordHeights.push(recordHeight);
+    
+    // Track max height per row
+    const row = Math.floor(i / cols);
+    if (!rowHeights[row]) {
+      rowHeights[row] = 0;
+    }
+    rowHeights[row] = Math.max(rowHeights[row], recordHeight);
+  }
+
+  // Calculate cumulative row positions
+  const rowPositions: number[] = [0];
+  for (let row = 1; row < rows; row++) {
+    rowPositions[row] = rowPositions[row - 1] + rowHeights[row - 1] + 100; // 100px spacing between rows
+  }
+
+  // Process each JSON object
+  for (let i = 0; i < jsonObjects.length; i++) {
+    const obj = jsonObjects[i];
+    const baseColor = rainbowColors[i];
+    const hierarchicalColors = generateHierarchicalColors(baseColor, 6);
     
     // Calculate grid position
     const col = i % cols;
     const row = Math.floor(i / cols);
     const gridX = col * totalRecordWidth;
-    const gridY = row * 3500; // Vertical spacing between rows (enough for most records)
+    const gridY = rowPositions[row]; // Use calculated row position
     
-    const objectContext: LayoutContext = { x: gridX + 20, y: gridY + 80 };
-    
-    // Enhanced traverse function with hierarchical coloring
-    function traverseWithColors(value: unknown, key: string | null, context: LayoutContext, depth = 0): void {
-      const colorIndex = Math.min(depth, hierarchicalColors.length - 1);
-      const currentColor = hierarchicalColors[colorIndex];
-      
-      if (value === null || value === undefined) {
-        nodes.push({
-          id: generateId(),
-          type: 'text',
-          text: `**${key || 'null'}**: ${value}`,
-          x: context.x,
-          y: context.y,
-          width: 200,
-          height: 60,
-          color: currentColor,
-        });
-        context.y += 80;
-      } else if (typeof value === 'object' && !Array.isArray(value)) {
-        // Object to Group
-        const groupId = generateId();
-        const groupStartY = context.y;
-        context.y += 40; // Space for group header
-        
-        const entries = Object.entries(value as Record<string, unknown>);
-        entries.forEach(([k, v]) => {
-          traverseWithColors(v, k, context, depth + 1);
-        });
-        
-        const groupHeight = Math.max(context.y - groupStartY + 20, 100);
-        nodes.push({
-          id: groupId,
-          type: 'group',
-          label: key || 'Object',
-          x: context.x - 10,
-          y: groupStartY,
-          width: 300,
-          height: groupHeight,
-          color: currentColor,
-        });
-        
-        context.y += 20; // Space after group
-      } else if (Array.isArray(value)) {
-        // Array to Group
-        const groupId = generateId();
-        const groupStartY = context.y;
-        context.y += 40; // Space for group header
-        
-        value.forEach((item, index) => {
-          traverseWithColors(item, `[${index}]`, context, depth + 1);
-        });
-        
-        const groupHeight = Math.max(context.y - groupStartY + 20, 100);
-        nodes.push({
-          id: groupId,
-          type: 'group',
-          label: key ? `${key} [${value.length}]` : `Array [${value.length}]`,
-          x: context.x - 10,
-          y: groupStartY,
-          width: 300,
-          height: groupHeight,
-          color: currentColor,
-        });
-        
-        context.y += 20; // Space after group
-      } else {
-        // Primitive to Text node
-        const displayValue = typeof value === 'string' ? `"${value}"` : 
-                            typeof value === 'number' || typeof value === 'boolean' ? String(value) :
-                            typeof value === 'object' ? JSON.stringify(value) : 'unknown';
-        nodes.push({
-          id: generateId(),
-          type: 'text',
-          text: key ? `**${key}**: ${displayValue}` : displayValue,
-          x: context.x,
-          y: context.y,
-          width: 250,
-          height: Math.max(60, Math.ceil(displayValue.length / 30) * 20 + 40),
-          color: currentColor,
-        });
-        context.y += Math.max(80, Math.ceil(displayValue.length / 30) * 20 + 60);
-      }
+    // STEP 1: Place all nodes first in proper 2-column layout
+    interface NodePlacement {
+      id: string;
+      type: 'text';
+      text: string;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      color: string;
+      groupPath: string[]; // Path to determine which groups this node belongs to
     }
     
-    // Traverse the object content with hierarchical coloring
-    traverseWithColors(obj, null, objectContext);
+    const nodePlacements: NodePlacement[] = [];
+    let currentY = gridY + 50; // Space for parent group label
     
-    // Create wrapper group for this JSONL object with rainbow color
-    const objectHeight = Math.max(objectContext.y - gridY + 20, 100);
-    nodes.push({
-      id: objectGroupId,
-      type: 'group',
-      label: `Record ${i + 1}`,
-      x: gridX,
-      y: gridY,
-      width: recordWidth,
-      height: objectHeight,
-      color: baseColor,
-    });
+    // Process the flattened record structure
+    if (typeof obj === 'object' && obj !== null && '_section' in obj && '_index' in obj) {
+      // This is a flattened record from our JSON processing
+      const record = obj as Record<string, unknown>;
+      const sectionName = String(record._section);
+      const recordIndex = Number(record._index);
+      const parentGroupLabel = `${sectionName} ${recordIndex}`;
+      
+      // Place all the actual data nodes (skip _section and _index)
+      const dataEntries = Object.entries(record).filter(([key]) => !key.startsWith('_'));
+      let currentColumn = 0;
+      
+      // First pass: place simple properties in "Object" group
+      const simpleEntries = dataEntries.filter(([, value]) => 
+        typeof value !== 'object' || value === null
+      );
+      
+      if (simpleEntries.length > 0) {
+        // Add extra spacing before Object section
+        currentY += sectionSpacing;
+        
+        for (const [key, value] of simpleEntries) {
+          const columnX = gridX + groupPadding + (currentColumn * (columnWidth + columnSpacing));
+          
+          nodePlacements.push({
+            id: generateId(),
+            type: 'text',
+            text: `**${key}**: ${value === null ? 'null' : typeof value === 'string' ? `"${value}"` : String(value)}`,
+            x: columnX,
+            y: currentY,
+            width: columnWidth,
+            height: nodeHeight,
+            color: hierarchicalColors[1] || hierarchicalColors[hierarchicalColors.length - 1],
+            groupPath: [parentGroupLabel, 'Object'],
+          });
+          
+          currentColumn = (currentColumn + 1) % 2;
+          if (currentColumn === 0) {
+            currentY += nodeHeight + nodeSpacing;
+          }
+        }
+        
+        // Ensure we end on a new row
+        if (currentColumn !== 0) {
+          currentY += nodeHeight + nodeSpacing;
+          currentColumn = 0;
+        }
+      }
+      
+      // Second pass: place complex objects
+      const complexEntries = dataEntries.filter(([, value]) => 
+        typeof value === 'object' && value !== null
+      );
+      
+      for (const [key, value] of complexEntries) {
+        // Add extra spacing before each complex section
+        currentY += sectionSpacing;
+        
+        if (Array.isArray(value)) {
+          // Handle arrays directly at top level
+          const arrayLabel = `${key} [${value.length}]`;
+          
+          value.forEach((item, index) => {
+            const columnX = gridX + groupPadding + (currentColumn * (columnWidth + columnSpacing));
+            
+            nodePlacements.push({
+              id: generateId(),
+              type: 'text',
+              text: `**[${index}]**: ${item === null ? 'null' : typeof item === 'string' ? `"${item}"` : String(item)}`,
+              x: columnX,
+              y: currentY,
+              width: columnWidth,
+              height: nodeHeight,
+              color: hierarchicalColors[2] || hierarchicalColors[hierarchicalColors.length - 1],
+              groupPath: [parentGroupLabel, arrayLabel],
+            });
+            
+            currentColumn = (currentColumn + 1) % 2;
+            if (currentColumn === 0) {
+              currentY += nodeHeight + nodeSpacing;
+            }
+          });
+          
+          // Ensure we end on a new row
+          if (currentColumn !== 0) {
+            currentY += nodeHeight + nodeSpacing;
+            currentColumn = 0;
+          }
+          
+          // Add extra spacing after arrays
+          currentY += groupSpacing;
+          
+        } else {
+          // Handle nested objects
+          const objectEntries = Object.entries(value as Record<string, unknown>);
+          
+          for (const [childKey, childValue] of objectEntries) {
+            if (Array.isArray(childValue)) {
+              // Array within nested object
+              const arrayLabel = `${childKey} [${childValue.length}]`;
+              
+              childValue.forEach((item, index) => {
+                const columnX = gridX + groupPadding + (currentColumn * (columnWidth + columnSpacing));
+                
+                nodePlacements.push({
+                  id: generateId(),
+                  type: 'text',
+                  text: `**[${index}]**: ${item === null ? 'null' : typeof item === 'string' ? `"${item}"` : String(item)}`,
+                  x: columnX,
+                  y: currentY,
+                  width: columnWidth,
+                  height: nodeHeight,
+                  color: hierarchicalColors[3] || hierarchicalColors[hierarchicalColors.length - 1],
+                  groupPath: [parentGroupLabel, key, arrayLabel],
+                });
+                
+                currentColumn = (currentColumn + 1) % 2;
+                if (currentColumn === 0) {
+                  currentY += nodeHeight + nodeSpacing;
+                }
+              });
+              
+              // Ensure we end on a new row after array
+              if (currentColumn !== 0) {
+                currentY += nodeHeight + nodeSpacing;
+                currentColumn = 0;
+              }
+              
+              // Add extra spacing after nested arrays
+              currentY += groupSpacing;
+              
+            } else {
+              // Regular property in nested object
+              const columnX = gridX + groupPadding + (currentColumn * (columnWidth + columnSpacing));
+              
+              nodePlacements.push({
+                id: generateId(),
+                type: 'text',
+                text: `**${childKey}**: ${childValue === null ? 'null' : typeof childValue === 'string' ? `"${childValue}"` : String(childValue)}`,
+                x: columnX,
+                y: currentY,
+                width: columnWidth,
+                height: nodeHeight,
+                color: hierarchicalColors[2] || hierarchicalColors[hierarchicalColors.length - 1],
+                groupPath: [parentGroupLabel, key],
+              });
+              
+              currentColumn = (currentColumn + 1) % 2;
+              if (currentColumn === 0) {
+                currentY += nodeHeight + nodeSpacing;
+              }
+            }
+          }
+          
+          // Ensure we end on a new row after nested object
+          if (currentColumn !== 0) {
+            currentY += nodeHeight + nodeSpacing;
+            currentColumn = 0;
+          }
+          
+          // Add extra spacing after complex sections
+          currentY += groupSpacing;
+        }
+      }
+      
+      // STEP 2: Calculate group boundaries based on actual node positions
+      const groupBoundaries = new Map<string, {
+        minX: number;
+        minY: number;
+        maxX: number;
+        maxY: number;
+        nodes: NodePlacement[];
+        color: string;
+        depth: number;
+      }>();
+      
+      // Group nodes by their group paths
+      for (const node of nodePlacements) {
+        for (let depth = 0; depth < node.groupPath.length; depth++) {
+          const groupKey = node.groupPath.slice(0, depth + 1).join(' > ');
+          
+          if (!groupBoundaries.has(groupKey)) {
+            groupBoundaries.set(groupKey, {
+              minX: node.x,
+              minY: node.y,
+              maxX: node.x + node.width,
+              maxY: node.y + node.height,
+              nodes: [],
+              color: hierarchicalColors[depth] || hierarchicalColors[hierarchicalColors.length - 1],
+              depth,
+            });
+          }
+          
+          const boundary = groupBoundaries.get(groupKey)!;
+          boundary.minX = Math.min(boundary.minX, node.x);
+          boundary.minY = Math.min(boundary.minY, node.y);
+          boundary.maxX = Math.max(boundary.maxX, node.x + node.width);
+          boundary.maxY = Math.max(boundary.maxY, node.y + node.height);
+          boundary.nodes.push(node);
+        }
+      }
+      
+      // STEP 3: Create groups with proper boundaries and same width
+      for (const [groupKey, boundary] of groupBoundaries.entries()) {
+        const groupPath = groupKey.split(' > ');
+        const groupLabel = groupPath[groupPath.length - 1];
+        const isParent = groupPath.length === 1;
+        
+        // Calculate group dimensions
+        const groupX = gridX;
+        let groupY = boundary.minY - 30; // Space for group label
+        const groupWidth = recordWidth;
+        let groupHeight: number;
+        
+        if (isParent) {
+          // Parent group spans entire record
+          groupY = gridY;
+          groupHeight = currentY - gridY + 20;
+        } else {
+          // Child group only as tall as needed
+          groupHeight = boundary.maxY - boundary.minY + 60; // Extra space for label and padding
+        }
+        
+        groupNodes.push({
+          id: generateId(),
+          type: 'group',
+          label: groupLabel,
+          x: groupX,
+          y: groupY,
+          width: groupWidth,
+          height: groupHeight,
+          color: boundary.color,
+        });
+      }
+      
+      // STEP 4: Add all content nodes
+      for (const node of nodePlacements) {
+        contentNodes.push({
+          id: node.id,
+          type: node.type,
+          text: node.text,
+          x: node.x,
+          y: node.y,
+          width: node.width,
+          height: node.height,
+          color: node.color,
+        });
+      }
+    }
   }
 
+  // Solitaire-style layering: groups first (bottom), then content (top)
+  const nodes: CanvasNode[] = [...groupNodes, ...contentNodes];
+  
   return { nodes, edges: [] };
 }
 

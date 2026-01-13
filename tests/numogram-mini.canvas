@@ -1,0 +1,563 @@
+{
+  "nodes": [
+    {
+      "id": "79c276c48702a947",
+      "type": "group",
+      "x": 100,
+      "y": -88,
+      "width": 940,
+      "height": 835,
+      "label": "correct"
+    },
+    {
+      "id": "imported-000000000000001a",
+      "type": "group",
+      "x": 600,
+      "y": -68,
+      "width": 420,
+      "height": 795,
+      "color": "#f7f7a1",
+      "label": "Demon Lookup 0"
+    },
+    {
+      "id": "imported-000000000000001b",
+      "type": "group",
+      "x": 600,
+      "y": 2,
+      "width": 420,
+      "height": 725,
+      "color": "#f7f7a1",
+      "label": "Object"
+    },
+    {
+      "id": "imported-0000000000000029",
+      "type": "text",
+      "text": "**Currents**: null",
+      "x": 620,
+      "y": 621,
+      "width": 180,
+      "height": 50,
+      "color": "#edf8de"
+    },
+    {
+      "id": "imported-000000000000001e",
+      "type": "text",
+      "text": "**Mesh Number**: \"Mesh-00\"",
+      "x": 620,
+      "y": 17,
+      "width": 180,
+      "height": 60,
+      "color": "#edf8de"
+    },
+    {
+      "id": "imported-0000000000000021",
+      "type": "text",
+      "text": "**Name**: \"Lurgo (Legba)\"",
+      "x": 820,
+      "y": 87,
+      "width": 180,
+      "height": 60,
+      "color": "#edf8de"
+    },
+    {
+      "id": "imported-000000000000001f",
+      "type": "text",
+      "text": "**Net-Span**: \"1::0\"",
+      "x": 820,
+      "y": 17,
+      "width": 180,
+      "height": 60,
+      "color": "#edf8de"
+    },
+    {
+      "id": "imported-0000000000000023",
+      "type": "text",
+      "text": "**Pitch**: \"Ana-1\"",
+      "x": 820,
+      "y": 172,
+      "width": 180,
+      "height": 50,
+      "color": "#edf8de"
+    },
+    {
+      "id": "imported-0000000000000020",
+      "type": "text",
+      "text": "**Reference Tag**: \"[M#0 (1::0)]\"",
+      "x": 620,
+      "y": 87,
+      "width": 180,
+      "height": 60,
+      "color": "#edf8de"
+    },
+    {
+      "id": "imported-0000000000000022",
+      "type": "text",
+      "text": "**Stillwell Classification**: \"(Terminal) Initiator\"",
+      "x": 620,
+      "y": 162,
+      "width": 180,
+      "height": 75,
+      "color": "#edf8de"
+    },
+    {
+      "id": "imported-000000000000002a",
+      "type": "text",
+      "text": "**Title**: \"Amphidemon of Openings (The Door of Doors)\"",
+      "x": 820,
+      "y": 596,
+      "width": 180,
+      "height": 75,
+      "color": "#edf8de"
+    },
+    {
+      "id": "imported-0000000000000024",
+      "type": "group",
+      "x": 600,
+      "y": 284,
+      "width": 420,
+      "height": 290,
+      "color": "#edf8de",
+      "label": "Hyperstitial Interplay"
+    },
+    {
+      "id": "imported-0000000000000025",
+      "type": "text",
+      "text": "**Clicks**: \"Gt-00, Lurgo is known as the First Door and the Door of Doors in Muvian sorcery. Her mesh number (00) clicks the 0th Gate (Gt-00), linking her to a highly occulted region in numogrammatic cartography.\"",
+      "x": 620,
+      "y": 315,
+      "width": 180,
+      "height": 60,
+      "color": "#f1faef"
+    },
+    {
+      "id": "imported-0000000000000026",
+      "type": "group",
+      "x": 600,
+      "y": 424,
+      "width": 420,
+      "height": 150,
+      "color": "#f1faef",
+      "label": "Ciphers [2]"
+    },
+    {
+      "id": "imported-0000000000000027",
+      "type": "text",
+      "text": "**[0]**: \"Gt-01\"",
+      "x": 620,
+      "y": 484,
+      "width": 180,
+      "height": 50,
+      "color": "#ffffff"
+    },
+    {
+      "id": "imported-0000000000000028",
+      "type": "text",
+      "text": "**[1]**: \"Gt-10\"",
+      "x": 820,
+      "y": 484,
+      "width": 180,
+      "height": 50,
+      "color": "#ffffff"
+    },
+    {
+      "id": "imported-000000000000000d",
+      "type": "group",
+      "x": 120,
+      "y": -65,
+      "width": 420,
+      "height": 497,
+      "color": "#efbf8f",
+      "label": "Zone Lookup 1"
+    },
+    {
+      "id": "imported-000000000000000e",
+      "type": "group",
+      "x": 120,
+      "y": -8,
+      "width": 420,
+      "height": 440,
+      "color": "#efbf8f",
+      "label": "Object"
+    },
+    {
+      "id": "imported-0000000000000016",
+      "type": "text",
+      "text": "**Current Destination Zone**: 7",
+      "x": 345,
+      "y": 170,
+      "width": 180,
+      "height": 60,
+      "color": "#f0ecc8"
+    },
+    {
+      "id": "imported-0000000000000015",
+      "type": "text",
+      "text": "**Current Name**: \"Rise\"",
+      "x": 145,
+      "y": 170,
+      "width": 180,
+      "height": 50,
+      "color": "#f0ecc8"
+    },
+    {
+      "id": "imported-0000000000000018",
+      "type": "text",
+      "text": "**Gate Destination Zone**: 1",
+      "x": 345,
+      "y": 250,
+      "width": 180,
+      "height": 60,
+      "color": "#f0ecc8"
+    },
+    {
+      "id": "imported-0000000000000017",
+      "type": "text",
+      "text": "**Gate Name**: \"Gt-1\"",
+      "x": 145,
+      "y": 240,
+      "width": 180,
+      "height": 50,
+      "color": "#f0ecc8"
+    },
+    {
+      "id": "imported-0000000000000019",
+      "type": "text",
+      "text": "**Reference Tag**: \"[Zone 1]\"",
+      "x": 145,
+      "y": 310,
+      "width": 180,
+      "height": 60,
+      "color": "#f0ecc8"
+    },
+    {
+      "id": "imported-0000000000000013",
+      "type": "text",
+      "text": "**Syzygy Aspect**: \"Anamnesis\"",
+      "x": 145,
+      "y": 90,
+      "width": 180,
+      "height": 60,
+      "color": "#f0ecc8"
+    },
+    {
+      "id": "imported-0000000000000012",
+      "type": "text",
+      "text": "**Syzygy Partner**: 8",
+      "x": 345,
+      "y": 20,
+      "width": 180,
+      "height": 50,
+      "color": "#f0ecc8"
+    },
+    {
+      "id": "imported-0000000000000014",
+      "type": "text",
+      "text": "**Time System**: \"Time-Circuit\"",
+      "x": 345,
+      "y": 90,
+      "width": 180,
+      "height": 60,
+      "color": "#f0ecc8"
+    },
+    {
+      "id": "imported-0000000000000011",
+      "type": "text",
+      "text": "**Zone Number**: 1",
+      "x": 145,
+      "y": 20,
+      "width": 180,
+      "height": 50,
+      "color": "#f0ecc8"
+    },
+    {
+      "id": "522a4452eb5186a5",
+      "type": "group",
+      "x": 1160,
+      "y": -88,
+      "width": 960,
+      "height": 613,
+      "label": "incorrect"
+    },
+    {
+      "id": "imported-0000000000000000",
+      "type": "group",
+      "x": 1700,
+      "y": -68,
+      "width": 400,
+      "height": 490,
+      "color": "#e48181",
+      "label": "Record 1"
+    },
+    {
+      "id": "imported-0000000000000003",
+      "type": "text",
+      "text": "**_index**: 0",
+      "x": 1915,
+      "y": -23,
+      "width": 180,
+      "height": 50,
+      "color": "#e5c9b5"
+    },
+    {
+      "id": "imported-0000000000000009",
+      "type": "text",
+      "text": "**Current Destination Zone**: 9",
+      "x": 1915,
+      "y": 192,
+      "width": 180,
+      "height": 60,
+      "color": "#e5c9b5"
+    },
+    {
+      "id": "imported-000000000000000b",
+      "type": "text",
+      "text": "**Gate Destination Zone**: 0",
+      "x": 1915,
+      "y": 262,
+      "width": 180,
+      "height": 60,
+      "color": "#e5c9b5"
+    },
+    {
+      "id": "imported-0000000000000005",
+      "type": "text",
+      "text": "**Syzygy Partner**: 9",
+      "x": 1915,
+      "y": 52,
+      "width": 180,
+      "height": 50,
+      "color": "#e5c9b5"
+    },
+    {
+      "id": "imported-0000000000000007",
+      "type": "text",
+      "text": "**Time System**: \"Plex\"",
+      "x": 1915,
+      "y": 132,
+      "width": 180,
+      "height": 50,
+      "color": "#e5c9b5"
+    },
+    {
+      "id": "imported-0000000000000001",
+      "type": "group",
+      "x": 1700,
+      "y": -33,
+      "width": 360,
+      "height": 425,
+      "color": "#e48181",
+      "label": "Object"
+    },
+    {
+      "id": "imported-0000000000000002",
+      "type": "text",
+      "text": "**_section**: \"Zone Lookup\"",
+      "x": 1705,
+      "y": -28,
+      "width": 180,
+      "height": 60,
+      "color": "#e5c9b5"
+    },
+    {
+      "id": "imported-0000000000000008",
+      "type": "text",
+      "text": "**Current Name**: \"Plex\"",
+      "x": 1705,
+      "y": 177,
+      "width": 180,
+      "height": 50,
+      "color": "#e5c9b5"
+    },
+    {
+      "id": "imported-000000000000000a",
+      "type": "text",
+      "text": "**Gate Name**: \"Gt-0\"",
+      "x": 1705,
+      "y": 247,
+      "width": 180,
+      "height": 50,
+      "color": "#e5c9b5"
+    },
+    {
+      "id": "imported-000000000000000c",
+      "type": "text",
+      "text": "**Reference Tag**: \"[Zone 0]\"",
+      "x": 1705,
+      "y": 317,
+      "width": 180,
+      "height": 60,
+      "color": "#e5c9b5"
+    },
+    {
+      "id": "imported-0000000000000006",
+      "type": "text",
+      "text": "**Syzygy Aspect**: \"Foundation\"",
+      "x": 1705,
+      "y": 102,
+      "width": 180,
+      "height": 60,
+      "color": "#e5c9b5"
+    },
+    {
+      "id": "imported-0000000000000004",
+      "type": "text",
+      "text": "**Zone Number**: 0",
+      "x": 1705,
+      "y": 47,
+      "width": 180,
+      "height": 50,
+      "color": "#e5c9b5"
+    },
+    {
+      "id": "imported-000000000000002b",
+      "type": "group",
+      "x": 1180,
+      "y": -65,
+      "width": 400,
+      "height": 570,
+      "color": "#c0f2c0",
+      "label": "Record 4"
+    },
+    {
+      "id": "imported-000000000000002e",
+      "type": "text",
+      "text": "**_index**: 1",
+      "x": 1395,
+      "y": 15,
+      "width": 180,
+      "height": 50,
+      "color": "#f7fcf9"
+    },
+    {
+      "id": "imported-0000000000000032",
+      "type": "text",
+      "text": "**Name**: \"Duoddod\"",
+      "x": 1395,
+      "y": 135,
+      "width": 180,
+      "height": 50,
+      "color": "#f7fcf9"
+    },
+    {
+      "id": "imported-0000000000000030",
+      "type": "text",
+      "text": "**Net-Span**: \"2::0\"",
+      "x": 1395,
+      "y": 75,
+      "width": 180,
+      "height": 50,
+      "color": "#f7fcf9"
+    },
+    {
+      "id": "imported-0000000000000034",
+      "type": "text",
+      "text": "**Pitch**: \"Ana-2\"",
+      "x": 1395,
+      "y": 195,
+      "width": 180,
+      "height": 50,
+      "color": "#f7fcf9"
+    },
+    {
+      "id": "imported-000000000000003a",
+      "type": "text",
+      "text": "**Title**: \"Amphidemon of Abstract Addiction\"",
+      "x": 1395,
+      "y": 405,
+      "width": 180,
+      "height": 60,
+      "color": "#f7fcf9"
+    },
+    {
+      "id": "imported-000000000000002c",
+      "type": "group",
+      "x": 1190,
+      "y": -15,
+      "width": 360,
+      "height": 505,
+      "color": "#c0f2c0",
+      "label": "Object"
+    },
+    {
+      "id": "imported-000000000000002d",
+      "type": "text",
+      "text": "**_section**: \"Demon Lookup\"",
+      "x": 1195,
+      "y": 15,
+      "width": 180,
+      "height": 60,
+      "color": "#f7fcf9"
+    },
+    {
+      "id": "imported-0000000000000039",
+      "type": "text",
+      "text": "**Currents**: null",
+      "x": 1195,
+      "y": 405,
+      "width": 180,
+      "height": 50,
+      "color": "#f7fcf9"
+    },
+    {
+      "id": "imported-000000000000002f",
+      "type": "text",
+      "text": "**Mesh Number**: \"Mesh-01\"",
+      "x": 1195,
+      "y": 75,
+      "width": 180,
+      "height": 60,
+      "color": "#f7fcf9"
+    },
+    {
+      "id": "imported-0000000000000031",
+      "type": "text",
+      "text": "**Reference Tag**: \"[M#1 (2::0)]\"",
+      "x": 1195,
+      "y": 135,
+      "width": 180,
+      "height": 60,
+      "color": "#f7fcf9"
+    },
+    {
+      "id": "imported-0000000000000033",
+      "type": "text",
+      "text": "**Stillwell Classification**: \"Duplicitous Redoubler\"",
+      "x": 1195,
+      "y": 195,
+      "width": 180,
+      "height": 75,
+      "color": "#f7fcf9"
+    },
+    {
+      "id": "imported-0000000000000035",
+      "type": "group",
+      "x": 1190,
+      "y": 255,
+      "width": 360,
+      "height": 150,
+      "color": "#f7fcf9",
+      "label": "Hyperstitial Interplay"
+    },
+    {
+      "id": "imported-0000000000000038",
+      "type": "text",
+      "text": "**[0]**: null",
+      "x": 1195,
+      "y": 315,
+      "width": 180,
+      "height": 50,
+      "color": "#ffffff"
+    },
+    {
+      "id": "imported-0000000000000036",
+      "type": "text",
+      "text": "**Clicks**: \"Clicks Gt-01\"",
+      "x": 1195,
+      "y": 285,
+      "width": 180,
+      "height": 60,
+      "color": "#ffffff"
+    }
+  ],
+  "edges": []
+}
