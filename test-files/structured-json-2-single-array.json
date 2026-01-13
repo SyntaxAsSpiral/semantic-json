@@ -1,0 +1,112 @@
+[
+    {
+        "Zone Number":0,
+        "Syzygy Partner":9,
+        "Syzygy Aspect":"Foundation",
+        "Time System":"Plex",
+        "Current Name":"Plex",
+        "Current Destination Zone":9,
+        "Gate Name":"Gt-0",
+        "Gate Destination Zone":0,
+        "Reference Tag":"[Zone 0]"
+    },
+    {
+        "Zone Number":1,
+        "Syzygy Partner":8,
+        "Syzygy Aspect":"Anamnesis",
+        "Time System":"Time-Circuit",
+        "Current Name":"Rise",
+        "Current Destination Zone":7,
+        "Gate Name":"Gt-1",
+        "Gate Destination Zone":1,
+        "Reference Tag":"[Zone 1]"
+    },
+    {
+        "Zone Number":2,
+        "Syzygy Partner":7,
+        "Syzygy Aspect":"Genesis",
+        "Time System":"Time-Circuit",
+        "Current Name":"Hold",
+        "Current Destination Zone":5,
+        "Gate Name":"Gt-3",
+        "Gate Destination Zone":3,
+        "Reference Tag":"[Zone 2]"
+    },
+    {
+        "Zone Number":3,
+        "Syzygy Partner":6,
+        "Syzygy Aspect":"Fortune",
+        "Time System":"Warp",
+        "Current Name":"Warp",
+        "Current Destination Zone":3,
+        "Gate Name":"Gt-6",
+        "Gate Destination Zone":6,
+        "Reference Tag":"[Zone 3]"
+    },
+    {
+        "Zone Number":4,
+        "Syzygy Partner":5,
+        "Syzygy Aspect":"Apocalypse",
+        "Time System":"Time-Circuit",
+        "Current Name":"Sink",
+        "Current Destination Zone":1,
+        "Gate Name":"Gt-10",
+        "Gate Destination Zone":1,
+        "Reference Tag":"[Zone 4]"
+    },
+    {
+        "Zone Number":5,
+        "Syzygy Partner":4,
+        "Syzygy Aspect":"Apocalypse",
+        "Time System":"Time-Circuit",
+        "Current Name":"Sink",
+        "Current Destination Zone":1,
+        "Gate Name":"Gt-15",
+        "Gate Destination Zone":6,
+        "Reference Tag":"[Zone5]"
+    },
+    {
+        "Zone Number":6,
+        "Syzygy Partner":3,
+        "Syzygy Aspect":"Fortune",
+        "Time System":"Warp",
+        "Current Name":"Warp",
+        "Current Destination Zone":3,
+        "Gate Name":"Gt-21",
+        "Gate Destination Zone":3,
+        "Reference Tag":"[Zone6]"
+    },
+    {
+        "Zone Number":7,
+        "Syzygy Partner":2,
+        "Syzygy Aspect":"Genesis",
+        "Time System":"Time-Circuit",
+        "Current Name":"Hold",
+        "Current Destination Zone":5,
+        "Gate Name":"Gt-28",
+        "Gate Destination Zone":1,
+        "Reference Tag":"[Zone7]"
+    },
+    {
+        "Zone Number":8,
+        "Syzygy Partner":1,
+        "Syzygy Aspect":"Anamnesis",
+        "Time System":"Time-Circuit",
+        "Current Name":"Rise",
+        "Current Destination Zone":7,
+        "Gate Name":"Gt-36",
+        "Gate Destination Zone":9,
+        "Reference Tag":"[Zone8]"
+    },
+    {
+        "Zone Number":9,
+        "Syzygy Partner":0,
+        "Syzygy Aspect":"Foundation",
+        "Time System":"Plex",
+        "Current Name":"Plex",
+        "Current Destination Zone":9,
+        "Gate Name":"Gt-45",
+        "Gate Destination Zone":9,
+        "Reference Tag":"[Zone9]"
+    }
+]

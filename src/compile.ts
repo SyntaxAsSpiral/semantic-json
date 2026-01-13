@@ -1445,11 +1445,201 @@ function flattenHierarchical(
 
 
 /**
+ * Import pure Canvas data (.pure.json files) with intelligent semantic mapping.
+ * Maps **id**, **type**, **label**, **text** patterns back to proper Canvas fields.
+ * Uses 8-column single-node layout matching the golden reference structure.
+ */
+function importPureCanvasData(data: any): CanvasData {
+  if (!data || typeof data !== 'object') {
+    throw new Error('Invalid pure Canvas data: expected object with nodes array');
+  }
+  
+  // Extract nodes array from Canvas structure
+  const sourceNodes = Array.isArray(data.nodes) ? data.nodes : [];
+  if (sourceNodes.length === 0) {
+    return { nodes: [], edges: [] };
+  }
+  
+  const outputNodes: CanvasNode[] = [];
+  let idCounter = 0;
+  const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
+  
+  // Configuration matching golden reference (8 columns, 310px width, 360px spacing)
+  const recordWidth = 310;
+  const recordSpacing = 360; // Matches golden file spacing
+  const maxCols = 8;
+  const groupPadding = 10;
+  const nodeWidth = 250;
+  const nodeHeight = 60;
+  const nodeSpacing = 80; // Vertical spacing between nodes
+  
+  // Generate rainbow colors for records
+  const rainbowColors = generateRainbowGradient(sourceNodes.length);
+  
+  // Process each source node as a separate record
+  sourceNodes.forEach((sourceNode, recordIndex) => {
+    const recordColor = rainbowColors[recordIndex % rainbowColors.length];
+    const hierarchicalColors = generateHierarchicalColors(recordColor, 3);
+    
+    // Calculate grid position (8 columns)
+    const col = recordIndex % maxCols;
+    const row = Math.floor(recordIndex / maxCols);
+    const gridX = col * recordSpacing;
+    const gridY = row * 1000; // Generous row spacing for varying heights
+    
+    // Extract semantic information and create proper Canvas node
+    const canvasNode = createCanvasNodeFromSource(sourceNode, generateId);
+    
+    // Position the node
+    canvasNode.x = gridX + groupPadding;
+    canvasNode.y = gridY + 120; // Space for parent group header
+    canvasNode.width = nodeWidth;
+    canvasNode.height = calculateNodeHeight(canvasNode);
+    canvasNode.color = hierarchicalColors[1];
+    
+    // Create nested group structure matching golden reference
+    const objectGroupId = generateId();
+    const recordGroupId = generateId();
+    
+    // Object group (inner)
+    const objectGroup: CanvasNode = {
+      id: objectGroupId,
+      type: 'group',
+      label: 'Object',
+      x: gridX + groupPadding,
+      y: gridY + 80,
+      width: 300,
+      height: canvasNode.height + 100,
+      color: hierarchicalColors[0],
+    };
+    
+    // Record group (outer)  
+    const recordGroup: CanvasNode = {
+      id: recordGroupId,
+      type: 'group',
+      label: `Record ${recordIndex + 1}`,
+      x: gridX,
+      y: gridY,
+      width: recordWidth,
+      height: canvasNode.height + 140,
+      color: recordColor,
+    };
+    
+    // Add nodes in solitaire order: groups first, then content
+    outputNodes.push(recordGroup, objectGroup, canvasNode);
+  });
+  
+  return { nodes: outputNodes, edges: [] };
+}
+
+/**
+ * Create a proper Canvas node from source node with semantic field mapping.
+ * Extracts **id**, **type**, **label**, **text** patterns and maps to Canvas fields.
+ */
+function createCanvasNodeFromSource(sourceNode: any, generateId: () => string): CanvasNode {
+  // Start with source node as base
+  const canvasNode: CanvasNode = {
+    id: sourceNode.id || generateId(),
+    type: sourceNode.type || 'text',
+  };
+  
+  // If source has text content, process it for semantic extraction
+  if (sourceNode.text && typeof sourceNode.text === 'string') {
+    const extracted = extractSemanticFields(sourceNode.text);
+    
+    // Apply extracted semantic fields to Canvas node
+    if (extracted.id) canvasNode.id = extracted.id;
+    if (extracted.type) canvasNode.type = extracted.type;
+    if (extracted.label) canvasNode.label = extracted.label;
+    if (extracted.text) canvasNode.text = extracted.text;
+    
+    // If no semantic text was extracted, use original text
+    if (!extracted.text && !extracted.label) {
+      canvasNode.text = sourceNode.text;
+    }
+  } else {
+    // Copy other fields directly
+    if (sourceNode.label) canvasNode.label = sourceNode.label;
+    if (sourceNode.text) canvasNode.text = sourceNode.text;
+  }
+  
+  return canvasNode;
+}
+
+/**
+ * Extract semantic fields from text content.
+ * Parses **field**: "value" patterns and returns structured data.
+ */
+function extractSemanticFields(text: string): {
+  id?: string;
+  type?: string;
+  label?: string;
+  text?: string;
+} {
+  const result: any = {};
+  let remainingText = text;
+  
+  // Extract **id**: "value" pattern
+  const idMatch = text.match(/\*\*id\*\*:\s*"([^"]+)"/);
+  if (idMatch) {
+    result.id = idMatch[1];
+    remainingText = remainingText.replace(idMatch[0], '').trim();
+  }
+  
+  // Extract **type**: "value" pattern
+  const typeMatch = text.match(/\*\*type\*\*:\s*"([^"]+)"/);
+  if (typeMatch) {
+    result.type = typeMatch[1];
+    remainingText = remainingText.replace(typeMatch[0], '').trim();
+  }
+  
+  // Extract **label**: "value" pattern
+  const labelMatch = text.match(/\*\*label\*\*:\s*"([^"]+)"/);
+  if (labelMatch) {
+    result.label = labelMatch[1];
+    remainingText = remainingText.replace(labelMatch[0], '').trim();
+  }
+  
+  // Extract **text**: "value" pattern (handles multiline content)
+  const textMatch = text.match(/\*\*text\*\*:\s*"([\s\S]*?)"/);
+  if (textMatch) {
+    result.text = textMatch[1];
+    remainingText = remainingText.replace(textMatch[0], '').trim();
+  }
+  
+  // If there's remaining content after extraction, use it as text
+  remainingText = remainingText.replace(/^\s*\n+|\n+\s*$/g, '').trim();
+  if (remainingText && !result.text && !result.label) {
+    result.text = remainingText;
+  }
+  
+  return result;
+}
+
+/**
+ * Calculate appropriate height for a Canvas node based on its content.
+ */
+function calculateNodeHeight(node: CanvasNode): number {
+  const baseHeight = 60;
+  
+  if (node.text && typeof node.text === 'string') {
+    const lines = node.text.split('\n').length;
+    const estimatedHeight = Math.max(baseHeight, lines * 20 + 40);
+    return Math.min(estimatedHeight, 2640); // Cap at reasonable max
+  }
+  
+  return baseHeight;
+}
+
+/**
  * Unified import function that detects input type by file extension and content.
  * Supports .json, .jsonl files with automatic type detection and enhanced visual features.
+ * Special handling for .pure.json files (Canvas exports) with 8-column layout.
  */
 export function importDataToCanvas(filePath: string, fileContent: string): CanvasData {
-  const extension = filePath.toLowerCase().split('.').pop();
+  const fileName = filePath.toLowerCase();
+  const extension = fileName.split('.').pop();
+  const isPureCanvas = fileName.includes('.pure.json');
   
   try {
     if (extension === 'jsonl') {
@@ -1470,8 +1660,12 @@ export function importDataToCanvas(filePath: string, fileContent: string): Canva
       return importJsonlToCanvasEnhanced(jsonObjects);
       
     } else if (extension === 'json') {
-      // JSON: Parse as single object/array and use grid layout by default
       const data = JSON.parse(fileContent);
+      
+      // Pure Canvas handling: already in Canvas format with groups and nodes
+      if (isPureCanvas) {
+        return importPureCanvasData(data);
+      }
       
       // For Canvas exports, extract the nodes array
       if (typeof data === 'object' && data !== null && 'nodes' in data) {
