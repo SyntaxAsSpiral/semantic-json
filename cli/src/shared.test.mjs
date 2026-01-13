@@ -24,7 +24,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // File I/O Tests
 test('readJson reads and parses JSON file', () => {
-  const testFile = path.join(__dirname, '..', '..', 'tests', 'numogram-mini.json');
+  const testFile = path.join(__dirname, '..', '..', 'test-files', 'structured-json-2-single-array.json');
   const data = readJson(testFile);
   assert(typeof data === 'object');
   assert(data !== null);

@@ -52,8 +52,8 @@ function cleanupTempFiles(files) {
 
 test('Property 4: Refactored CLI produces identical output for compilation', () => {
   const testFiles = [
-    'tests/numogram-mini.canvas',
-    'tests/catppuccin-4col.canvas',
+    'test-files/raw-user-canvas-1.canvas',
+    'test-files/raw-user-canvas-2.canvas',
   ];
 
   for (const testFile of testFiles) {
@@ -63,8 +63,8 @@ test('Property 4: Refactored CLI produces identical output for compilation', () 
       continue;
     }
 
-    const tempOut1 = path.join(__dirname, '..', 'tests', `temp-original-${Date.now()}.json`);
-    const tempOut2 = path.join(__dirname, '..', 'tests', `temp-refactored-${Date.now()}.json`);
+    const tempOut1 = path.join(__dirname, '..', 'test-files', `temp-original-${Date.now()}.json`);
+    const tempOut2 = path.join(__dirname, '..', 'test-files', `temp-refactored-${Date.now()}.json`);
 
     try {
       // Run original CLI
@@ -119,7 +119,7 @@ test('Property 4: Refactored CLI produces identical output for compilation', () 
 });
 
 test('Property 4: Refactored CLI produces identical output for JSON import', () => {
-  const testFile = 'tests/numogram-mini.json';
+  const testFile = 'test-files/structured-json-2-single-array.json';
   const inputPath = path.join(__dirname, '..', testFile);
 
   if (!fs.existsSync(inputPath)) {
@@ -127,8 +127,8 @@ test('Property 4: Refactored CLI produces identical output for JSON import', () 
     return;
   }
 
-  const tempOut1 = path.join(__dirname, '..', 'tests', `temp-original-import-${Date.now()}.canvas`);
-  const tempOut2 = path.join(__dirname, '..', 'tests', `temp-refactored-import-${Date.now()}.canvas`);
+  const tempOut1 = path.join(__dirname, '..', 'test-files', `temp-original-import-${Date.now()}.canvas`);
+  const tempOut2 = path.join(__dirname, '..', 'test-files', `temp-refactored-import-${Date.now()}.canvas`);
 
   try {
     // Run original CLI
@@ -167,7 +167,7 @@ test('Property 4: Refactored CLI produces identical output for JSON import', () 
 });
 
 test('Property 4: Refactored CLI produces identical output with flags', () => {
-  const testFile = 'tests/numogram-mini.canvas';
+  const testFile = 'test-files/raw-user-canvas-1.canvas';
   const inputPath = path.join(__dirname, '..', testFile);
 
   if (!fs.existsSync(inputPath)) {
@@ -185,8 +185,8 @@ test('Property 4: Refactored CLI produces identical output with flags', () => {
   ];
 
   for (const flags of flagCombinations) {
-    const tempOut1 = path.join(__dirname, '..', 'tests', `temp-original-flags-${Date.now()}.json`);
-    const tempOut2 = path.join(__dirname, '..', 'tests', `temp-refactored-flags-${Date.now()}.json`);
+    const tempOut1 = path.join(__dirname, '..', 'test-files', `temp-original-flags-${Date.now()}.json`);
+    const tempOut2 = path.join(__dirname, '..', 'test-files', `temp-refactored-flags-${Date.now()}.json`);
 
     try {
       // Run original CLI
@@ -266,23 +266,23 @@ test('Property 5: Refactored CLI accepts same valid argument combinations', () =
   const validArgCombinations = [
     '--help',
     '-h',
-    '--in tests/numogram-mini.canvas',
-    '--from-json tests/numogram-mini.json',
-    '--import tests/numogram-mini.json',
-    '--in tests/numogram-mini.canvas --color-nodes',
-    '--in tests/numogram-mini.canvas --no-color-nodes',
-    '--in tests/numogram-mini.canvas --color-edges',
-    '--in tests/numogram-mini.canvas --no-color-edges',
-    '--in tests/numogram-mini.canvas --flow-sort',
-    '--in tests/numogram-mini.canvas --no-flow-sort',
-    '--in tests/numogram-mini.canvas --strip-metadata',
-    '--in tests/numogram-mini.canvas --strip-edges-when-flow-sorted',
-    '--in tests/numogram-mini.canvas --no-strip-edges-when-flow-sorted',
-    '--in tests/numogram-mini.canvas --group-orphan-nodes',
-    '--in tests/numogram-mini.canvas --no-group-orphan-nodes',
-    '--in tests/numogram-mini.canvas --out tests/temp-output.json',
-    '--in tests/numogram-mini.canvas --flow-sort --strip-metadata',
-    '--in tests/numogram-mini.canvas --no-color-nodes --no-color-edges',
+    '--in test-files/raw-user-canvas-1.canvas',
+    '--from-json test-files/structured-json-2-single-array.json',
+    '--import test-files/structured-json-2-single-array.json',
+    '--in test-files/raw-user-canvas-1.canvas --color-nodes',
+    '--in test-files/raw-user-canvas-1.canvas --no-color-nodes',
+    '--in test-files/raw-user-canvas-1.canvas --color-edges',
+    '--in test-files/raw-user-canvas-1.canvas --no-color-edges',
+    '--in test-files/raw-user-canvas-1.canvas --flow-sort',
+    '--in test-files/raw-user-canvas-1.canvas --no-flow-sort',
+    '--in test-files/raw-user-canvas-1.canvas --strip-metadata',
+    '--in test-files/raw-user-canvas-1.canvas --strip-edges-when-flow-sorted',
+    '--in test-files/raw-user-canvas-1.canvas --no-strip-edges-when-flow-sorted',
+    '--in test-files/raw-user-canvas-1.canvas --group-orphan-nodes',
+    '--in test-files/raw-user-canvas-1.canvas --no-group-orphan-nodes',
+    '--in test-files/raw-user-canvas-1.canvas --out test-files/temp-output.json',
+    '--in test-files/raw-user-canvas-1.canvas --flow-sort --strip-metadata',
+    '--in test-files/raw-user-canvas-1.canvas --no-color-nodes --no-color-edges',
   ];
 
   for (const args of validArgCombinations) {
@@ -310,7 +310,7 @@ test('Property 5: Refactored CLI accepts same valid argument combinations', () =
   }
 
   // Clean up any temp files
-  cleanupTempFiles(['tests/temp-output.json']);
+  cleanupTempFiles(['test-files/temp-output.json']);
 });
 
 test('Property 5: Refactored CLI rejects same invalid argument combinations', () => {
@@ -321,9 +321,9 @@ test('Property 5: Refactored CLI rejects same invalid argument combinations', ()
     '--from-jsonl',  // Missing value
     '--import',  // Missing value
     '--out',  // Missing value
-    '--in tests/nonexistent.canvas',  // File doesn't exist
-    '--from-json tests/nonexistent.json',  // File doesn't exist
-    '--in tests/numogram-mini.canvas --unknown-flag',
+    '--in test-files/nonexistent.canvas',  // File doesn't exist
+    '--from-json test-files/nonexistent.json',  // File doesn't exist
+    '--in test-files/raw-user-canvas-1.canvas --unknown-flag',
     '--color-nodes --no-color-nodes',  // Contradictory flags (both should work, last wins)
   ];
 
@@ -347,7 +347,7 @@ test('Property 5: Refactored CLI rejects same invalid argument combinations', ()
 });
 
 test('Property 5: Refactored CLI handles flag order identically', () => {
-  const testFile = 'tests/catppuccin-4col.canvas';
+  const testFile = 'test-files/raw-user-canvas-1.canvas';
   const inputPath = path.join(__dirname, '..', testFile);
 
   if (!fs.existsSync(inputPath)) {
@@ -357,16 +357,16 @@ test('Property 5: Refactored CLI handles flag order identically', () => {
 
   // Test that flag order doesn't matter
   const flagOrderVariations = [
-    '--in tests/catppuccin-4col.canvas --flow-sort --strip-metadata',
-    '--flow-sort --in tests/catppuccin-4col.canvas --strip-metadata',
-    '--flow-sort --strip-metadata --in tests/catppuccin-4col.canvas',
-    '--strip-metadata --flow-sort --in tests/catppuccin-4col.canvas',
+    '--in test-files/raw-user-canvas-1.canvas --flow-sort --strip-metadata',
+    '--flow-sort --in test-files/raw-user-canvas-1.canvas --strip-metadata',
+    '--flow-sort --strip-metadata --in test-files/raw-user-canvas-1.canvas',
+    '--strip-metadata --flow-sort --in test-files/raw-user-canvas-1.canvas',
   ];
 
   const outputs = [];
 
   for (const args of flagOrderVariations) {
-    const tempOut = path.join(__dirname, '..', 'tests', `temp-order-${Date.now()}.json`);
+    const tempOut = path.join(__dirname, '..', 'test-files', `temp-order-${Date.now()}.json`);
 
     try {
       const refactoredResult = runCLI('cli/index.mjs', `${args} --out ${tempOut}`);
@@ -397,7 +397,7 @@ test('Property 5: Refactored CLI handles flag order identically', () => {
 });
 
 test('Property 5: Refactored CLI handles boolean flag negation identically', () => {
-  const testFile = 'tests/catppuccin-4col.canvas';
+  const testFile = 'test-files/raw-user-canvas-1.canvas';
   const inputPath = path.join(__dirname, '..', testFile);
 
   if (!fs.existsSync(inputPath)) {
@@ -414,8 +414,8 @@ test('Property 5: Refactored CLI handles boolean flag negation identically', () 
   ];
 
   for (const [contradictory, expected] of flagPairs) {
-    const tempOut1 = path.join(__dirname, '..', 'tests', `temp-contra-${Date.now()}.json`);
-    const tempOut2 = path.join(__dirname, '..', 'tests', `temp-expected-${Date.now()}.json`);
+    const tempOut1 = path.join(__dirname, '..', 'test-files', `temp-contra-${Date.now()}.json`);
+    const tempOut2 = path.join(__dirname, '..', 'test-files', `temp-expected-${Date.now()}.json`);
 
     try {
       const contradictoryResult = runCLI(
@@ -460,106 +460,88 @@ test('Property 5: Refactored CLI handles boolean flag negation identically', () 
  */
 
 test('Integration: End-to-end CLI functionality with all import modes', () => {
-  // Create a simple test JSON file to avoid ID conflicts
-  const simpleTestData = {
-    "name": "Test Data",
-    "items": ["item1", "item2", "item3"],
-    "metadata": {
-      "version": "1.0",
-      "author": "test"
-    }
-  };
-
-  const tempJsonFile = path.join(__dirname, '..', 'tests', `temp-simple-${Date.now()}.json`);
-  fs.writeFileSync(tempJsonFile, JSON.stringify(simpleTestData, null, 2), 'utf8');
-
   const testCases = [
     {
       mode: 'compile',
-      input: 'tests/numogram-mini.canvas',
-      args: '--in tests/numogram-mini.canvas',
+      input: 'test-files/raw-user-canvas-1.canvas',
+      args: '--in test-files/raw-user-canvas-1.canvas',
       expectedExt: '.json'
     },
     {
       mode: 'import-json',
-      input: tempJsonFile,
-      args: `--from-json ${tempJsonFile}`,
+      input: 'test-files/structured-json-2-single-array.json',
+      args: '--from-json test-files/structured-json-2-single-array.json',
       expectedExt: '.canvas'
     },
     {
       mode: 'import-unified',
-      input: tempJsonFile,
-      args: `--import ${tempJsonFile}`,
+      input: 'test-files/structured-json-3-single-array.json',
+      args: '--import test-files/structured-json-3-single-array.json',
       expectedExt: '.canvas'
     }
   ];
 
-  try {
-    for (const testCase of testCases) {
-      const inputPath = testCase.input.startsWith('tests/') ? 
-        path.join(__dirname, '..', testCase.input) : testCase.input;
-      
-      if (!fs.existsSync(inputPath)) {
-        console.log(`Skipping ${testCase.mode} - input file not found: ${testCase.input}`);
-        continue;
-      }
-
-      const tempOut = path.join(__dirname, '..', 'tests', `temp-integration-${Date.now()}${testCase.expectedExt}`);
-
-      try {
-        const result = runCLI('cli/index.mjs', `${testCase.args} --out ${tempOut}`);
-
-        // Should succeed
-        assert.strictEqual(
-          result.exitCode,
-          0,
-          `${testCase.mode} should succeed: ${result.stderr}`
-        );
-
-        // Should create output file
-        assert.ok(
-          fs.existsSync(tempOut),
-          `${testCase.mode} should create output file`
-        );
-
-        // Should produce valid JSON output summary
-        assert.ok(
-          result.stdout.trim().length > 0,
-          `${testCase.mode} should produce stdout summary`
-        );
-
-        const summary = JSON.parse(result.stdout);
-        assert.ok(
-          typeof summary.inPath === 'string',
-          `${testCase.mode} summary should include inPath`
-        );
-        assert.ok(
-          typeof summary.outPath === 'string',
-          `${testCase.mode} summary should include outPath`
-        );
-        assert.ok(
-          typeof summary.nodesOut === 'number',
-          `${testCase.mode} summary should include nodesOut count`
-        );
-
-        // Output file should contain valid JSON
-        const outputContent = fs.readFileSync(tempOut, 'utf8');
-        const outputData = JSON.parse(outputContent);
-        assert.ok(
-          Array.isArray(outputData.nodes),
-          `${testCase.mode} output should have nodes array`
-        );
-        assert.ok(
-          Array.isArray(outputData.edges),
-          `${testCase.mode} output should have edges array`
-        );
-
-      } finally {
-        cleanupTempFiles([tempOut]);
-      }
+  for (const testCase of testCases) {
+    const inputPath = path.join(__dirname, '..', testCase.input);
+    
+    if (!fs.existsSync(inputPath)) {
+      console.log(`Skipping ${testCase.mode} - input file not found: ${testCase.input}`);
+      continue;
     }
-  } finally {
-    cleanupTempFiles([tempJsonFile]);
+
+    const tempOut = path.join(__dirname, '..', 'test-files', `temp-integration-${Date.now()}${testCase.expectedExt}`);
+
+    try {
+      const result = runCLI('cli/index.mjs', `${testCase.args} --out ${tempOut}`);
+
+      // Should succeed
+      assert.strictEqual(
+        result.exitCode,
+        0,
+        `${testCase.mode} should succeed: ${result.stderr}`
+      );
+
+      // Should create output file
+      assert.ok(
+        fs.existsSync(tempOut),
+        `${testCase.mode} should create output file`
+      );
+
+      // Should produce valid JSON output summary
+      assert.ok(
+        result.stdout.trim().length > 0,
+        `${testCase.mode} should produce stdout summary`
+      );
+
+      const summary = JSON.parse(result.stdout);
+      assert.ok(
+        typeof summary.inPath === 'string',
+        `${testCase.mode} summary should include inPath`
+      );
+      assert.ok(
+        typeof summary.outPath === 'string',
+        `${testCase.mode} summary should include outPath`
+      );
+      assert.ok(
+        typeof summary.nodesOut === 'number',
+        `${testCase.mode} summary should include nodesOut count`
+      );
+
+      // Output file should contain valid JSON
+      const outputContent = fs.readFileSync(tempOut, 'utf8');
+      const outputData = JSON.parse(outputContent);
+      assert.ok(
+        Array.isArray(outputData.nodes),
+        `${testCase.mode} output should have nodes array`
+      );
+      assert.ok(
+        Array.isArray(outputData.edges),
+        `${testCase.mode} output should have edges array`
+      );
+
+    } finally {
+      cleanupTempFiles([tempOut]);
+    }
   }
 });
 
@@ -573,11 +555,11 @@ test('Integration: Error handling and exit codes', () => {
     },
     {
       name: 'invalid JSON input',
-      args: '--from-json tests/invalid.json',
+      args: '--from-json test-files/invalid.json',
       expectedExitCode: 1,
       expectedErrorPattern: /failed|invalid|parse/i,
       setupFile: () => {
-        const invalidPath = path.join(__dirname, '..', 'tests', 'invalid.json');
+        const invalidPath = path.join(__dirname, '..', 'test-files', 'invalid.json');
         fs.writeFileSync(invalidPath, '{ invalid json }', 'utf8');
         return invalidPath;
       }
@@ -679,10 +661,10 @@ test('Integration: Module coordination and data flow', () => {
     }
   };
 
-  const tempJsonFile = path.join(__dirname, '..', 'tests', `temp-roundtrip-${Date.now()}.json`);
-  const tempCanvasFile1 = path.join(__dirname, '..', 'tests', `temp-roundtrip-1-${Date.now()}.canvas`);
-  const tempCompiledFile = path.join(__dirname, '..', 'tests', `temp-roundtrip-compiled-${Date.now()}.json`);
-  const tempCanvasFile2 = path.join(__dirname, '..', 'tests', `temp-roundtrip-2-${Date.now()}.canvas`);
+  const tempJsonFile = path.join(__dirname, '..', 'test-files', `temp-roundtrip-${Date.now()}.json`);
+  const tempCanvasFile1 = path.join(__dirname, '..', 'test-files', `temp-roundtrip-1-${Date.now()}.canvas`);
+  const tempCompiledFile = path.join(__dirname, '..', 'test-files', `temp-roundtrip-compiled-${Date.now()}.json`);
+  const tempCanvasFile2 = path.join(__dirname, '..', 'test-files', `temp-roundtrip-2-${Date.now()}.canvas`);
 
   try {
     // Step 1: Create test JSON file
@@ -741,8 +723,8 @@ test('Integration: Performance and resource handling', () => {
     }))
   };
 
-  const tempJsonFile = path.join(__dirname, '..', 'tests', `temp-large-${Date.now()}.json`);
-  const tempCanvasFile = path.join(__dirname, '..', 'tests', `temp-large-${Date.now()}.canvas`);
+  const tempJsonFile = path.join(__dirname, '..', 'test-files', `temp-large-${Date.now()}.json`);
+  const tempCanvasFile = path.join(__dirname, '..', 'test-files', `temp-large-${Date.now()}.canvas`);
 
   try {
     // Create large test file
@@ -772,5 +754,104 @@ test('Integration: Performance and resource handling', () => {
 
   } finally {
     cleanupTempFiles([tempJsonFile, tempCanvasFile]);
+  }
+});
+
+test('Integration: Semantic interoperability with Canvas field reassignment', () => {
+  // Test that Canvas field reassignment preserves semantic interoperability
+  // This tests the core requirement that data exported by the plugin can be re-imported intelligently
+  
+  // Step 1: Create a Canvas with semantic content
+  const originalCanvas = {
+    nodes: [
+      {
+        id: "test-node-1",
+        type: "text",
+        text: "**id**: \"semantic-id-1\"\n**type**: \"group\"\n**label**: \"Test Group\"\nSome additional content",
+        x: 100,
+        y: 100,
+        width: 300,
+        height: 150
+      },
+      {
+        id: "test-node-2", 
+        type: "text",
+        text: "**id**: \"semantic-id-2\"\n**text**: \"This is semantic text content\"",
+        x: 100,
+        y: 300,
+        width: 300,
+        height: 100
+      }
+    ],
+    edges: []
+  };
+
+  const tempCanvasFile = path.join(__dirname, '..', 'test-files', `temp-semantic-${Date.now()}.canvas`);
+  const tempCompiledFile = path.join(__dirname, '..', 'test-files', `temp-semantic-compiled-${Date.now()}.json`);
+  const tempReimportedFile = path.join(__dirname, '..', 'test-files', `temp-semantic-reimported-${Date.now()}.canvas`);
+
+  try {
+    // Step 1: Create original Canvas file
+    fs.writeFileSync(tempCanvasFile, JSON.stringify(originalCanvas, null, 2), 'utf8');
+
+    // Step 2: Compile to JSON (this should extract semantic fields)
+    const compileResult = runCLI('cli/index.mjs', `--in ${tempCanvasFile} --out ${tempCompiledFile} --strip-metadata`);
+    assert.strictEqual(compileResult.exitCode, 0, 'Canvas compilation should succeed');
+
+    // Step 3: Re-import the compiled JSON (this should reassign Canvas fields intelligently)
+    // Use --import instead of --from-json to get pure Canvas detection
+    const reimportResult = runCLI('cli/index.mjs', `--import ${tempCompiledFile} --out ${tempReimportedFile}`);
+    assert.strictEqual(reimportResult.exitCode, 0, 'JSON re-import should succeed');
+
+    // Step 4: Verify semantic interoperability
+    const compiledData = JSON.parse(fs.readFileSync(tempCompiledFile, 'utf8'));
+    const reimportedCanvas = JSON.parse(fs.readFileSync(tempReimportedFile, 'utf8'));
+
+    // The compiled JSON should have extracted semantic fields
+    const compiledNodes = compiledData.nodes;
+    assert.ok(compiledNodes.length >= 2, 'Compiled JSON should preserve nodes');
+
+    // Find nodes with semantic IDs
+    const semanticNode1 = compiledNodes.find(n => n.id === 'semantic-id-1');
+    const semanticNode2 = compiledNodes.find(n => n.id === 'semantic-id-2');
+
+    if (semanticNode1) {
+      assert.strictEqual(semanticNode1.type, 'group', 'Semantic type should be extracted and preserved');
+      assert.strictEqual(semanticNode1.label, 'Test Group', 'Semantic label should be extracted and preserved');
+    }
+
+    if (semanticNode2) {
+      assert.strictEqual(semanticNode2.text, 'This is semantic text content', 'Semantic text should be extracted and preserved');
+    }
+
+    // The re-imported Canvas should have proper Canvas structure
+    assert.ok(Array.isArray(reimportedCanvas.nodes), 'Re-imported Canvas should have nodes array');
+    assert.ok(reimportedCanvas.nodes.length > 0, 'Re-imported Canvas should have nodes');
+
+    // Test should FAIL if semantic interoperability is broken
+    // This means the Canvas field reassignment is working correctly
+    const reimportedNodes = reimportedCanvas.nodes;
+    let foundSemanticReassignment = false;
+
+    for (const node of reimportedNodes) {
+      // Look for evidence of semantic field reassignment
+      // The key test is that semantic IDs, types, and labels are preserved
+      if (node.id === 'semantic-id-1' && node.type === 'group' && node.label === 'Test Group') {
+        foundSemanticReassignment = true;
+        break;
+      }
+      if (node.id === 'semantic-id-2' && node.text === 'This is semantic text content') {
+        foundSemanticReassignment = true;
+        break;
+      }
+    }
+
+    assert.ok(
+      foundSemanticReassignment,
+      'Semantic field reassignment should preserve Canvas field structure - if this fails, semantic interoperability is broken'
+    );
+
+  } finally {
+    cleanupTempFiles([tempCanvasFile, tempCompiledFile, tempReimportedFile]);
   }
 });

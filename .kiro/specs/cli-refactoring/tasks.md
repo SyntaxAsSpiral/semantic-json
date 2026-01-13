@@ -86,14 +86,14 @@ This implementation plan breaks down the refactoring of `cli/canvas-compile.mjs`
     - **Property 5: Argument parsing behaves identically to original**
     - **Validates: Requirements 1.4, 3.3**
 
-- [-] 7. Integration and validation
+- [x] 7. Integration and validation
   - [x] 7.1 Wire all modules together
     - Connect entrypoint to all modules
     - Ensure proper error propagation and handling
     - Test coordination between modules
     - _Requirements: 3.4, 3.5_
 
-  - [ ] 7.2 Write integration tests
+  - [x] 7.2 Write integration tests
     - Test end-to-end CLI functionality
     - Test error handling and exit codes
     - Test help output and usage messages
