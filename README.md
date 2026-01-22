@@ -8,7 +8,7 @@
 - **Enhanced imports ⇄ exports:** unified import with auto-detection, beautiful canvas imports, and clean pure JSON exports
 - **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
 - **Flexible AI Integration**: Optional LLM-based color-coded semantic ID assignment with support for local and cloud providers
-- **Intelligent file detection**: Works with `.canvas`, `.json`, `.jsonl`, or auto-detects based on content structure
+- **Intelligent file detection**: Works with `.canvas`, `.json`, `.jsonl`
 - **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
 - **CLI tool**: Included for batch processing or CI pipelines with unified `--import` command
 - **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
@@ -49,10 +49,10 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 
 ### Commands (via Command Palette)
 
-- 💫 **["Compile active canvas"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-compilation)**: Recompiles the `.canvas` file in-place preserving semantic structure
-- 🧠 **["Assign semantic ID values"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-semantic-id-assignment)**: Uses language model analysis to assign semantic IDs, optional taxonomy, and a legend node (requires configuration)
-- 📥 **["Import to canvas"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-unified-import-system)**: Auto-detects JSON/JSONL format and creates enhanced visual scaffolding with hierarchical coloring and rainbow gradients ([example](examples/large-jsonl-import.png))
-- 📤 **["Export as pure JSON"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-pure-json-export)**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
+- 💫 **["Compile active canvas"](https://lexemancy.com/docs/semantic-json.html#compilation)**: Recompiles the `.canvas` file in-place preserving semantic structure
+- 🧠 **["Assign semantic ID values"](https://lexemancy.com/docs/semantic-json.html#semantic-id-assignment)**: Uses language model analysis to assign semantic IDs, optional taxonomy, and a legend node (requires configuration)
+- 📥 **["Import to canvas"](https://lexemancy.com/docs/semantic-json.html#unified-import-system)**: Auto-detects JSON/JSONL format and creates enhanced visual scaffolding with hierarchical coloring and rainbow gradients ([example](examples/large-jsonl-import.png))
+- 📤 **["Export as pure JSON"](https://lexemancy.com/docs/semantic-json.html#pure-json-export)**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
 
 ### Settings
 
@@ -68,7 +68,7 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 [JSON Canvas](https://jsoncanvas.org/) is an open file format for infinite canvas data, originally developed for Obsidian Canvas. It promotes longevity, readability, interoperability, and extensibility using the `.canvas` extension and a simple JSON structure with nodes and edges. Infinite canvas tools organize information **spatially** like a digital whiteboard.
 
 ### Compilation Process
-[Full documentation](./.kiro/specs/semantic-json-canvas/)
+[Full documentation](https://lexemancy.com/docs/semantic-json.html)
 
 - **Hierarchical ordering**: Groups followed immediately by their contents, depth-first traversal
 - **Content-based sorting**: Nodes sort by semantic content (text/file name/URL/label) instead of random IDs
