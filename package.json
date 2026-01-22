@@ -1,6 +1,6 @@
 {
 	"name": "semantic-json",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"description": "Normalize Canvas JSON with flow sort, hierarchical grouping, and deterministic ordering",
 	"author": "Zach Battin",
 	"main": "main.js",
